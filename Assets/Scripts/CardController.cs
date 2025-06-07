@@ -1,150 +1,90 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using static Define;
 using static Define.Card;
 
 public class CardController : MonoBehaviour
 {
     // *******************************************************
-    // 定数
-    // *******************************************************
-
-    // *******************************************************
     // メンバ変数
     // *******************************************************
 
     /// <summary>
-    /// カードをセットするインスペクタ（表側54枚分）
-    /// spade, club, heart, diamond, joker
+    /// スプライト描画用コンポーネント
     /// </summary>
-    [SerializeField]
-    private Sprite[] cardSprites;
+    private SpriteRenderer _spriteRenderer;
+
+
+    // *******************************************************
+    // プロパティ
+    // *******************************************************
 
     /// <summary>
-    /// カードをセットするインスペクタ（裏側1種類）
+    /// カード情報を丸ごと保持
     /// </summary>
-    [SerializeField]
-    private Sprite[] backSprites;
-
-    private SpriteRenderer spriteRenderer;
-
-    [SerializeField]
-    private bool useJoker = true; // InspectorでON/OFF切替できる
-
-    private List<Card> deck;
-
-    /// <summary>
-    /// カードの絵柄
-    /// </summary>
-    public Suit suit;
-
-    /// <summary>
-    /// カードの数字
-    /// </summary>
-    public int number;
-
-    /// <summary>
-    /// カードの裏表
-    /// </summary>
-    private bool isFaceUp = false;
-
+    public Card Card { get; private set; }
 
 
     // *******************************************************
     // メソッド
     // *******************************************************
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        deck = CreateDeck(useJoker);
-        //Shuffle(deck);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
-    /// 
+    /// 初期化
     /// </summary>
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    public void SetCard(Suit suit, int number)
+    /// <param name="card"></param>
+    /// <param name="faceSprites"></param>
+    /// <param name="backSprites"></param>
+    public void SetCard(Card card, Sprite[] faceSprites, Sprite[] backSprites)
     {
-        this.suit = suit;
-        this.number = number;
+        Card = card;
 
-        if (suit == Suit.Joker)
+        if (Card.IsFaceUp)
         {
-            spriteRenderer.sprite = cardSprites[52 + number]; // number: 0 or 1
-        }
-        else
-        {
-            int index = ((int)suit) * 13 + (number - 1); // 0〜51
-            spriteRenderer.sprite = cardSprites[index];
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    /// <returns></returns>
-    private int GetSpriteIndex(Suit suit, int number)
-    {
-        // 例：Spade=0〜12, Heart=13〜25...
-        return ((int)suit) * 13 + (number - 1);
-    }
-
-    public void Flip(bool faceUp)
-    {
-        isFaceUp = faceUp;
-
-        if (isFaceUp)
-        {
-            SetCard(suit, number); // 表向き
-        }
-        else
-        {
-            spriteRenderer.sprite = backSprites[0]; // 裏向き
-        }
-    }
-
-    private List<Card> CreateDeck(bool includeJoker)
-    {
-        var newDeck = new List<Card>();
-
-        // 通常の52枚
-        foreach (Suit suit in System.Enum.GetValues(typeof(Suit)))
-        {
-            if (suit == Suit.Joker) continue;
-
-            for (int number = 1; number <= 13; number++)
+            int index = GetSpriteIndex(Card.Suit, Card.Number, faceSprites.Length);
+            if (index >= 0 && index < faceSprites.Length)
             {
-                newDeck.Add(new Card(suit, number));
+                _spriteRenderer.sprite = faceSprites[index];
+            }
+            else
+            {
+                Debug.LogWarning($"無効なスプライトインデックス: {index}");
             }
         }
-
-        // Joker追加（同じもの2枚）
-        if (includeJoker)
+        else
         {
-            newDeck.Add(new Card(Suit.Joker, 0));
-            newDeck.Add(new Card(Suit.Joker, 0)); // 同じもの
+            int backIndex = (int)Card.BackColor;
+            if (backIndex >= 0 && backIndex < backSprites.Length)
+            {
+                _spriteRenderer.sprite = backSprites[backIndex];
+            }
+            else
+            {
+                Debug.LogWarning($"無効な裏面スプライトインデックス: {backIndex}");
+            }
         }
-
-        return newDeck;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="suit"></param>
+    /// <param name="number"></param>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    private int GetSpriteIndex(SuitType suit, int number, int length)
+    {
+        if (suit == SuitType.Joker)
+        {
+            return length - 1;
+        }
+        return ((int)suit) * 13 + (number - 1);
+    }
 }

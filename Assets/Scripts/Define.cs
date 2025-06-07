@@ -5,6 +5,17 @@ using UnityEngine;
 /// </summary>
 public class Define
 {
+
+    // *******************************************************
+    // 定数
+    // *******************************************************
+
+    /// <summary>
+    /// カードの生成位置
+    /// </summary>
+    public Vector2 spawnPos = new Vector2(0, 0);
+
+
     /// <summary>
     /// カードを定義するクラス
     /// </summary>
@@ -15,15 +26,44 @@ public class Define
         // *******************************************************
 
         /// <summary>
-        /// トランプの絵柄定義
+        /// トランプのスート定義
         /// </summary>
-        public enum Suit
+        public enum SuitType
         {
-            Spade   = 0,
-            Heart   = 1,
-            Diamond = 2,
-            Club    = 3,
-            Joker   = 4
+            Spade   = 0,        // スペード
+            Club    = 1,        // クラブ
+            Diamond = 2,        // ダイヤ
+            Heart   = 3,        // ハート
+            Joker   = 4         // ジョーカー
+        }
+
+        /// <summary>
+        /// トランプの使用色
+        /// </summary>
+        public enum SuitColorMode
+        {
+            Both        = 0,    // 両方使用
+            BlackOnly   = 1,    // 黒のみ
+            RedOnly     = 2     // 赤のみ
+        }
+
+        /// <summary>
+        /// ジョーカーの使用
+        /// </summary>
+        public enum UseJoker
+        {
+            None    = 0,        // ジョーカーなし
+            One     = 1,        // 1枚使用
+            Two     = 2         // 2枚使用
+        }
+
+        /// <summary>
+        /// カード裏面の絵柄
+        /// </summary>
+        public enum BackSpriteColor
+        {
+            Red     = 0,        // 赤
+            Blue    = 1         // 青
         }
 
         // *******************************************************
@@ -31,14 +71,30 @@ public class Define
         // *******************************************************
 
         /// <summary>
-        /// トランプの絵柄
+        /// スート
         /// </summary>
-        public Suit suit;
-        
+        public SuitType Suit { get; private set; }
+
         /// <summary>
-        /// トランプの数字
+        /// 数字（1～13, Jokerは0）
         /// </summary>
-        public int number;
+        public int Number { get; private set; }
+
+        /// <summary>
+        /// 裏表
+        /// </summary>
+        public bool IsFaceUp { get; private set; }
+
+        /// <summary>
+        /// 位置
+        /// </summary>
+        public Vector2 SpawnPosition { get; private set; }
+
+        /// <summary>
+        /// カード裏面の絵柄
+        /// </summary>
+        public BackSpriteColor BackColor { get; private set; }
+
 
         // *******************************************************
         // コンストラクタ
@@ -47,12 +103,17 @@ public class Define
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="suit">トランプの絵柄</param>
-        /// <param name="number">トランプの数字</param>
-        public Card(Suit suit, int number)
+        /// <param name="suit">スート</param>
+        /// <param name="number">数字</param>
+        /// <param name="isFaceUp">裏表</param>
+        /// <param name="spawnPosition">位置</param>
+        public Card(SuitType suit, int number, bool isFaceUp, Vector2 spawnPosition, BackSpriteColor backColor)
         {
-            this.suit = suit;
-            this.number = number;
+            Suit = suit;
+            Number = number;
+            IsFaceUp = isFaceUp;
+            SpawnPosition = spawnPosition;
+            BackColor = backColor;
         }
     }
 }
