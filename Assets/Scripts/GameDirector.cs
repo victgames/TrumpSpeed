@@ -1,68 +1,86 @@
+using static Define.Card;
+using static Define;
 using System.Collections.Generic;
 using UnityEngine;
-using static Define;
-using static Define.Card;
 
 public class GameDirector : MonoBehaviour
 {
-    // *******************************************************
-    // メンバ変数
-    // *******************************************************
+    [SerializeField] private CardGenerator _cardGenerator;
 
-    /// <summary>
-    /// カード生成スクリプトへの参照
-    /// </summary>
-    [SerializeField] 
-    private CardGenerator _cardGenerator;
+    private List<CardEntry> _deckEntries = new List<CardEntry>();
 
-    /// <summary>
-    /// デッキ黒
-    /// </summary>
-    private List<Card> _deckBlack = new List<Card>();
+    [SerializeField] private Vector2 _deckBasePosition = new Vector2(4f, -1f);
+    [SerializeField] private Vector2 _deckOffset = new Vector2(0.015f, -0.015f);
+    [SerializeField] private Vector2 _drawnCardPosition = new Vector2(0f, 0f);  // 表向きカードの表示位置
 
-    /// <summary>
-    /// デッキ赤
-    /// </summary>
-    private List<Card> _deckRed = new List<Card>();
-
-
-    // *******************************************************
-    // メソッド
-    // *******************************************************
-
-    /// <summary>
-    /// 開始時処理
-    /// </summary>
     void Start()
     {
-        _deckBlack = _cardGenerator.CreateDeck(SuitColorMode.BlackOnly, UseJoker.None);
-        _deckRed = _cardGenerator.CreateDeck(SuitColorMode.RedOnly, UseJoker.None);
-
-        _cardGenerator.Shuffle(_deckRed);
-
-        _cardGenerator.GenerateCard(_deckRed, new Vector2(0, 0), true, BackSpriteColor.Red);
-
-        _cardGenerator.GenerateCard(_deckRed, new Vector2(-6, 0), true, BackSpriteColor.Red);
-
-        _cardGenerator.GenerateCard(_deckRed, new Vector2(6, 3), false, BackSpriteColor.Blue);
-
-        /*
-        int count = deckBlack.Count;
-
-        for (int i = count - 1; i >= 0; i--)
-        {
-            cardGenerator.GenerateCardFace(deckBlack);
-        }
-        */
-
+        InitializeDeck();
+        DisplayDeck();
+        DrawTopCard();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InitializeDeck()
     {
-        
+        _deckEntries.Clear();
+
+        List<Card> cardDataList = _cardGenerator.CreateDeck(SuitColorMode.Both, UseJoker.One);
+        _cardGenerator.Shuffle(cardDataList);
+
+        for (int i = 0; i < cardDataList.Count; i++)
+        {
+            Vector2 pos = _deckBasePosition + _deckOffset * i;
+
+            List<Card> singleCardList = new List<Card>() { cardDataList[i] };
+            GameObject cardObj = _cardGenerator.GenerateCard(singleCardList, pos, false, BackSpriteColor.Blue);
+
+            if (cardObj != null)
+            {
+                CardController controller = cardObj.GetComponent<CardController>();
+                if (controller != null)
+                {
+                    CardEntry entry = new CardEntry(cardDataList[i], controller);
+                    _deckEntries.Add(entry);
+                }
+            }
+        }
     }
 
+    private void DisplayDeck()
+    {
+        for (int i = 0; i < _deckEntries.Count; i++)
+        {
+            CardEntry entry = _deckEntries[i];
+            Vector2 pos = _deckBasePosition + _deckOffset * i;
 
-    
+            entry.View.transform.position = pos;
+
+            SpriteRenderer sr = entry.View.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.sortingOrder = i;
+            }
+        }
+    }
+
+    public CardEntry DrawTopCard()
+    {
+        if (_deckEntries.Count == 0) return null;
+
+        CardEntry topCard = _deckEntries[0];
+        _deckEntries.RemoveAt(0);
+
+        DisplayDeck();
+
+        topCard.View.transform.position = _drawnCardPosition;
+
+        CardController controller = topCard.View.GetComponent<CardController>();
+        if (controller != null)
+        {
+            controller.SetFaceUp(true); // 表向きにしてスプライトを更新
+            controller.Card.SpawnPosition = _drawnCardPosition;
+        }
+
+        return topCard;
+    }
 }

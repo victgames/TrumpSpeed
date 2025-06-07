@@ -4,87 +4,49 @@ using static Define.Card;
 
 public class CardController : MonoBehaviour
 {
-    // *******************************************************
-    // メンバ変数
-    // *******************************************************
-
-    /// <summary>
-    /// スプライト描画用コンポーネント
-    /// </summary>
     private SpriteRenderer _spriteRenderer;
 
+    /// <summary>このカードが持つスプライト（表・裏）</summary>
+    private Sprite _faceSprite;
+    private Sprite _backSprite;
 
-    // *******************************************************
-    // プロパティ
-    // *******************************************************
-
-    /// <summary>
-    /// カード情報を丸ごと保持
-    /// </summary>
     public Card Card { get; private set; }
 
-
-    // *******************************************************
-    // メソッド
-    // *******************************************************
-
-    /// <summary>
-    /// 初期化
-    /// </summary>
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     /// <summary>
-    /// 
+    /// カードとそのスプライト情報をセット
     /// </summary>
-    /// <param name="card"></param>
-    /// <param name="faceSprites"></param>
-    /// <param name="backSprites"></param>
-    public void SetCard(Card card, Sprite[] faceSprites, Sprite[] backSprites)
+    public void SetCard(Card card, Sprite faceSprite, Sprite backSprite)
     {
         Card = card;
+        _faceSprite = faceSprite;
+        _backSprite = backSprite;
 
-        if (Card.IsFaceUp)
-        {
-            int index = GetSpriteIndex(Card.Suit, Card.Number, faceSprites.Length);
-            if (index >= 0 && index < faceSprites.Length)
-            {
-                _spriteRenderer.sprite = faceSprites[index];
-            }
-            else
-            {
-                Debug.LogWarning($"無効なスプライトインデックス: {index}");
-            }
-        }
-        else
-        {
-            int backIndex = (int)Card.BackColor;
-            if (backIndex >= 0 && backIndex < backSprites.Length)
-            {
-                _spriteRenderer.sprite = backSprites[backIndex];
-            }
-            else
-            {
-                Debug.LogWarning($"無効な裏面スプライトインデックス: {backIndex}");
-            }
-        }
+        UpdateSprite();
     }
 
     /// <summary>
-    /// 
+    /// 表裏を切り替えてスプライトを更新
     /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    /// <param name="length"></param>
-    /// <returns></returns>
-    private int GetSpriteIndex(SuitType suit, int number, int length)
+    public void SetFaceUp(bool isFaceUp)
     {
-        if (suit == SuitType.Joker)
-        {
-            return length - 1;
-        }
-        return ((int)suit) * 13 + (number - 1);
+        if (Card == null) return;
+
+        Card.IsFaceUp = isFaceUp;
+        UpdateSprite();
+    }
+
+    /// <summary>
+    /// 現在のカード状態に応じて表示スプライトを更新
+    /// </summary>
+    public void UpdateSprite()
+    {
+        if (Card == null || _spriteRenderer == null) return;
+
+        _spriteRenderer.sprite = Card.IsFaceUp ? _faceSprite : _backSprite;
     }
 }

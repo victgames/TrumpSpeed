@@ -507,6 +507,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardGenerator: {fileID: 1601098629}
+  _deckBasePosition: {x: 4, y: -1}
+  _deckOffset: {x: 0.015, y: -0.015}
 --- !u!4 &2092881923
 Transform:
   m_ObjectHideFlags: 0

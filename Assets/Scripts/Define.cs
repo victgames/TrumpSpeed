@@ -5,17 +5,6 @@ using UnityEngine;
 /// </summary>
 public class Define
 {
-
-    // *******************************************************
-    // 定数
-    // *******************************************************
-
-    /// <summary>
-    /// カードの生成位置
-    /// </summary>
-    public Vector2 spawnPos = new Vector2(0, 0);
-
-
     /// <summary>
     /// カードを定義するクラス
     /// </summary>
@@ -67,7 +56,7 @@ public class Define
         }
 
         // *******************************************************
-        // メンバ変数
+        // プロパティ
         // *******************************************************
 
         /// <summary>
@@ -83,12 +72,12 @@ public class Define
         /// <summary>
         /// 裏表
         /// </summary>
-        public bool IsFaceUp { get; private set; }
+        public bool IsFaceUp { get; set; }
 
         /// <summary>
         /// 位置
         /// </summary>
-        public Vector2 SpawnPosition { get; private set; }
+        public Vector2 SpawnPosition { get; set; }
 
         /// <summary>
         /// カード裏面の絵柄
@@ -114,6 +103,42 @@ public class Define
             IsFaceUp = isFaceUp;
             SpawnPosition = spawnPosition;
             BackColor = backColor;
+        }
+    }
+
+    /// <summary>
+    /// カードの表示順を定義
+    /// </summary>
+    public class CardEntry
+    {
+        // *******************************************************
+        // プロパティ
+        // *******************************************************
+
+        /// <summary>
+        /// カードのデータ（スート・数字・裏表など）
+        /// </summary>
+        public Card Data { get; private set; }
+
+        /// <summary>
+        /// カードの見た目を制御するコンポーネント（GameObjectにアタッチ）
+        /// </summary>
+        public CardController View { get; private set; }
+
+
+        // *******************************************************
+        // コンストラクタ
+        // *******************************************************
+
+        /// <summary>
+        /// カードのデータと見た目（表示オブジェクト）を1セットで保持する
+        /// </summary>
+        /// <param name="data">カードのデータ</param>
+        /// <param name="view">カード表示用コンポーネント</param>
+        public CardEntry(Card data, CardController view)
+        {
+            Data = data;
+            View = view;
         }
     }
 }
