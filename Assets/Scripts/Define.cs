@@ -70,6 +70,11 @@ public class Define
         public int Number { get; private set; }
 
         /// <summary>
+        /// カード裏面の絵柄
+        /// </summary>
+        public BackSpriteColor BackColor { get; private set; }
+
+        /// <summary>
         /// 裏表
         /// </summary>
         public bool IsFaceUp { get; set; }
@@ -80,9 +85,14 @@ public class Define
         public Vector2 SpawnPosition { get; set; }
 
         /// <summary>
-        /// カード裏面の絵柄
+        /// タグ
         /// </summary>
-        public BackSpriteColor BackColor { get; private set; }
+        //public string Tag { get; set; }
+
+        /// <summary>
+        /// ソーティングレイヤー
+        /// </summary>
+        //public string SortingLayerName { get; set; }
 
 
         // *******************************************************
@@ -96,13 +106,15 @@ public class Define
         /// <param name="number">数字</param>
         /// <param name="isFaceUp">裏表</param>
         /// <param name="spawnPosition">位置</param>
-        public Card(SuitType suit, int number, bool isFaceUp, Vector2 spawnPosition, BackSpriteColor backColor)
+        public Card(SuitType suit, int number, BackSpriteColor backColor, bool isFaceUp, Vector2 spawnPosition)//, string tag, string sortingLayer)
         {
             Suit = suit;
             Number = number;
+            BackColor = backColor;
             IsFaceUp = isFaceUp;
             SpawnPosition = spawnPosition;
-            BackColor = backColor;
+            //Tag = tag;
+            //SortingLayerName = sortingLayer;
         }
     }
 

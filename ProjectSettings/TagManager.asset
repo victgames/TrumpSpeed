@@ -8,12 +8,12 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Table
   - Water
   - UI
-  - Card
-  - 
-  - 
+  - DeckCard
+  - FieldCard
+  - HandCard
   - 
   - 
   - 
@@ -41,11 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: table
+  - name: Table
     uniqueID: 4275862727
     locked: 0
-  - name: card
+  - name: Deck
     uniqueID: 785745957
+    locked: 0
+  - name: Field
+    uniqueID: 60719017
+    locked: 0
+  - name: Hand
+    uniqueID: 2142260911
     locked: 0
   m_RenderingLayers:
   - Default

@@ -46,9 +46,9 @@ public class CardGenerator : MonoBehaviour
         Card updatedCard = new Card(
             drawCard.Suit,
             drawCard.Number,
+            backColor,
             isFaceUp,
-            spawnPosition,
-            backColor
+            spawnPosition
         );
 
         GameObject cardObj = Instantiate(_cardPrefab, spawnPosition, Quaternion.identity);
@@ -97,13 +97,13 @@ public class CardGenerator : MonoBehaviour
 
             for (int num = 1; num <= 13; num++)
             {
-                deck.Add(new Card(suit, num, false, Vector2.zero, BackSpriteColor.Red));
+                deck.Add(new Card(suit, num, BackSpriteColor.Red, false, Vector2.zero));
             }
         }
 
         for (int i = 0; i < (int)includeJoker; i++)
         {
-            deck.Add(new Card(SuitType.Joker, 0, false, Vector2.zero, BackSpriteColor.Red));
+            deck.Add(new Card(SuitType.Joker, 0, BackSpriteColor.Red, false, Vector2.zero));
         }
 
         return deck;

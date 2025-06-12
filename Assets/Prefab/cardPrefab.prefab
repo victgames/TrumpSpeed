@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4525721818132392267}
   - component: {fileID: 1773734120101942124}
   - component: {fileID: 1219919946531416989}
-  m_Layer: 6
+  - component: {fileID: 7428556668741608051}
+  m_Layer: 0
   m_Name: cardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 785745957
-  m_SortingLayer: 2
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -100,64 +101,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d0b9be898dba34d84bd7a5177a904a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardSprites:
-  - {fileID: 3182076572784978821, guid: eec0c54d5eb38ab41af4905206788963, type: 3}
-  - {fileID: -5994300806035980071, guid: 22229ce8a7a6ea947aa922253ee11d1e, type: 3}
-  - {fileID: 3450309258323618041, guid: dca560849eed21a478941839a7cefd19, type: 3}
-  - {fileID: -4739318702827645493, guid: 4ef09dab6bae2f94f93fa11905423b1b, type: 3}
-  - {fileID: -5925680275740719334, guid: b0351fcc79435f9498ff28418ca5122a, type: 3}
-  - {fileID: -7459343632575908436, guid: 7628dd58fa51ab54488d413694ec46d9, type: 3}
-  - {fileID: -6994466616530877020, guid: dc06b6c2ce9e6af4aae9898c7837fcf0, type: 3}
-  - {fileID: 2994477981082170423, guid: e637fe1e8c80bad4ebefca6ac146ff03, type: 3}
-  - {fileID: 8901211658086246403, guid: 0239606ae400ec349ac1eb7dfe151d6a, type: 3}
-  - {fileID: 901039824165609754, guid: 30a2d608eb0daf94fa49af54ea368f89, type: 3}
-  - {fileID: 5521866058738950695, guid: 1285546676ab75e4f8793d6789809a8b, type: 3}
-  - {fileID: 1989187386516206212, guid: 83aa4baee48f0334185a3a1526310b58, type: 3}
-  - {fileID: -2921106815145780640, guid: 4e837193897c46a4c842d728ae0cb929, type: 3}
-  - {fileID: 8423629529596065126, guid: 561fccd601fc71d409e008e328fbc7e1, type: 3}
-  - {fileID: 2605708156303552579, guid: 1e476b6dcc20b9640b28c0bd22272de2, type: 3}
-  - {fileID: 6981204519032573115, guid: 5616120a2171dc343949f60aa1840c69, type: 3}
-  - {fileID: -5280154329285781299, guid: 549c818ae5ff506459608ae76ccff52c, type: 3}
-  - {fileID: 1741073155963128247, guid: 4090cf951a3101c489c5d24406e9b420, type: 3}
-  - {fileID: -1240450045511472329, guid: 9c2dcee39d9a0034eadd288a6a260fad, type: 3}
-  - {fileID: -7322117389892060332, guid: 865892bef07a3ff439ec15062fe4ec70, type: 3}
-  - {fileID: -6464748313494932392, guid: d3563cbc963bb254db4527ed5211fa34, type: 3}
-  - {fileID: -1440530486039820739, guid: 9a8d5a40e104e654eaae5c675578a70f, type: 3}
-  - {fileID: 4550495514592372182, guid: 82063967817b4b044a36378720fc498b, type: 3}
-  - {fileID: -2013904577189124760, guid: da619fae8f3d0d944bc088d025112209, type: 3}
-  - {fileID: 1302389202973673677, guid: 5fb9e4eb807f6b241a2ca06d45ee5cc8, type: 3}
-  - {fileID: 3007752903518654022, guid: 4d93fa506db901a4c91af3e18dbb12f8, type: 3}
-  - {fileID: -1584166118193680335, guid: 636f34bc1dfc05440812e289fc26cca0, type: 3}
-  - {fileID: 4888321605357683704, guid: cb20682d9f2f5a84f8334d6f29f4e4ba, type: 3}
-  - {fileID: 634104114638753546, guid: 13988b7b588ca3941b2ef4d40778c5d4, type: 3}
-  - {fileID: -5749593448825510287, guid: dddd55e34fd5e2b4ea066521391d1c86, type: 3}
-  - {fileID: -8672189554247302341, guid: 0c6f2f396c7b64643b9db37474e54b48, type: 3}
-  - {fileID: 7944103951660586652, guid: 6147fbea95fd49942b2a505ba3aabe36, type: 3}
-  - {fileID: 1360284403109051383, guid: 4defd0b884c611341a9582fa3b62b044, type: 3}
-  - {fileID: 2609255789027696233, guid: 3faa8972612fadd44b1a30d024643e1b, type: 3}
-  - {fileID: -1549479387001457547, guid: 4e3a473c4e94b29449ba1da608bffab0, type: 3}
-  - {fileID: 7605365560587069269, guid: 792b83f665921484193ff0cbe7df5733, type: 3}
-  - {fileID: 4814155698182697383, guid: 0855d0f2d42483f439a1a2564a8c3ffa, type: 3}
-  - {fileID: 168005649239487273, guid: 4ff769e0d2589ea4fb4229f86b6fefb1, type: 3}
-  - {fileID: 3207846953357277416, guid: 9807862fe9b7e8e4a802d7763c7d0d5f, type: 3}
-  - {fileID: -6471887476169781685, guid: 55e9bd206055d9944861bb4930fc195a, type: 3}
-  - {fileID: -1086030929803383456, guid: 31488611ace91f242bcce876a1b91d80, type: 3}
-  - {fileID: -3124623030644683200, guid: 7f3699be98814e34d9c359bb03a1bf56, type: 3}
-  - {fileID: 6192169557365799176, guid: 8d06fdbb8d3e57440a73ec14c7dc7153, type: 3}
-  - {fileID: 4811524028542519731, guid: 72588c15271c8624fa970c47d2dc7517, type: 3}
-  - {fileID: 1635495302517919353, guid: a56f371a34c3ec54c86b7439e40de98d, type: 3}
-  - {fileID: 6388135291122577730, guid: d189c3a4bd4cd2e4d97fe037ed189166, type: 3}
-  - {fileID: -6265438522264369519, guid: 301c0be02a96e2a4a8b592dedf003f95, type: 3}
-  - {fileID: -3773420085850129302, guid: f9e9a85b4d25d05449502a63a89bad34, type: 3}
-  - {fileID: 4302036022788271049, guid: 5fe10d4b901dd5746a305197d680e669, type: 3}
-  - {fileID: -4590915688877971617, guid: 90c14bb55f0cc4d4b97b4971905fe0f6, type: 3}
-  - {fileID: 3404258484242858176, guid: edf857b5af790214ab4f346d320766c9, type: 3}
-  - {fileID: 5629021634973914760, guid: 0b5be936ec706444d97ee900c12ffe0e, type: 3}
-  - {fileID: -4998455143283755344, guid: 1add9c712a9714b41b5c76436b65fc52, type: 3}
-  - {fileID: -4998455143283755344, guid: 1add9c712a9714b41b5c76436b65fc52, type: 3}
-  backSprites:
-  - {fileID: -6432337577258450137, guid: f258c35bfcd9650419bf9feb66187dc4, type: 3}
-  - {fileID: 1312734166432454459, guid: 2c770b6035f1df148aba33971b701917, type: 3}
-  useJoker: 1
-  suit: 0
-  number: 0
+  _currentDropTarget: {fileID: 0}
+--- !u!61 &7428556668741608051
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412503719535176771}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 7.06, y: 9.99}
+    newSize: {x: 7.06, y: 9.99}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 7, y: 10}
+  m_EdgeRadius: 0

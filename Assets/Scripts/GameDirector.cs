@@ -9,15 +9,50 @@ public class GameDirector : MonoBehaviour
 
     private List<CardEntry> _deckEntries = new List<CardEntry>();
 
-    [SerializeField] private Vector2 _deckBasePosition = new Vector2(4f, -1f);
-    [SerializeField] private Vector2 _deckOffset = new Vector2(0.015f, -0.015f);
-    [SerializeField] private Vector2 _drawnCardPosition = new Vector2(0f, 0f);  // 表向きカードの表示位置
+    private Vector2 _deckBasePosition = new Vector2(7.0f, -2.0f);
+
+    private Vector2 _deckOffset = new Vector2(0.010f, -0.010f);
+
+    private List<Vector2> _fieldCardPosition = new List<Vector2>
+    {
+        new Vector2(-3.6f, 1.0f),
+        new Vector2(-1.2f, 1.0f),
+        new Vector2( 1.2f, 1.0f),
+        new Vector2( 3.6f, 1.0f)
+    };
+
+
+    private List<Vector2> _handCardPosition = new List<Vector2>
+    {
+        new Vector2(-4.5f, -2.0f),
+        new Vector2(-1.5f, -2.0f),
+        new Vector2( 1.5f, -2.0f),
+        new Vector2( 4.5f, -2.0f)
+    };
+
+    
 
     void Start()
     {
         InitializeDeck();
+
+
+        // 生成後に位置や描画順の調整をDisplayDeckに任せる
         DisplayDeck();
-        DrawTopCard();
+
+        foreach (Vector2 fieldPos in _fieldCardPosition)
+        {
+            string tag = "FieldCard";
+            string sortingLayer = "Field";
+            DrawTopCard(fieldPos, tag, sortingLayer);
+        }
+
+        foreach (Vector2 drawnPos in _handCardPosition)
+        {
+            string tag = "HandCard";
+            string sortingLayer = "Hand";
+            DrawTopCard(drawnPos, tag, sortingLayer);
+        }
     }
 
     private void InitializeDeck()
@@ -31,11 +66,13 @@ public class GameDirector : MonoBehaviour
         {
             Vector2 pos = _deckBasePosition + _deckOffset * i;
 
-            List<Card> singleCardList = new List<Card>() { cardDataList[i] };
+            List<Card> singleCardList = new List<Card> { cardDataList[i] };
             GameObject cardObj = _cardGenerator.GenerateCard(singleCardList, pos, false, BackSpriteColor.Blue);
 
             if (cardObj != null)
             {
+                cardObj.tag = "DeckCard";
+
                 CardController controller = cardObj.GetComponent<CardController>();
                 if (controller != null)
                 {
@@ -44,6 +81,7 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
+
     }
 
     private void DisplayDeck()
@@ -51,19 +89,21 @@ public class GameDirector : MonoBehaviour
         for (int i = 0; i < _deckEntries.Count; i++)
         {
             CardEntry entry = _deckEntries[i];
-            Vector2 pos = _deckBasePosition + _deckOffset * i;
+            Vector3 pos = (Vector3)(_deckBasePosition + _deckOffset * i);
+            pos.z = -i * 0.01f; // Z軸をずらす
 
             entry.View.transform.position = pos;
 
             SpriteRenderer sr = entry.View.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
+                sr.sortingLayerName = "Deck";
                 sr.sortingOrder = i;
             }
         }
     }
 
-    public CardEntry DrawTopCard()
+    public CardEntry DrawTopCard(Vector2 pos, string tag, string sortLayer)
     {
         if (_deckEntries.Count == 0) return null;
 
@@ -72,13 +112,21 @@ public class GameDirector : MonoBehaviour
 
         DisplayDeck();
 
-        topCard.View.transform.position = _drawnCardPosition;
+        topCard.View.transform.position = pos;
+        topCard.View.tag = tag;
+
+        SpriteRenderer sr = topCard.View.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingLayerName = sortLayer;
+            sr.sortingOrder = 0; // 必要に応じて調整してください
+        }
 
         CardController controller = topCard.View.GetComponent<CardController>();
         if (controller != null)
         {
-            controller.SetFaceUp(true); // 表向きにしてスプライトを更新
-            controller.Card.SpawnPosition = _drawnCardPosition;
+            controller.SetFaceUp(true);
+            controller.Card.SpawnPosition = pos;
         }
 
         return topCard;
