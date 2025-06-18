@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - DeckCard
+  - FieldCard
+  - HandCard
   layers:
   - Default
   - TransparentFX
@@ -11,9 +14,9 @@ TagManager:
   - Table
   - Water
   - UI
-  - DeckCard
-  - FieldCard
-  - HandCard
+  - Deck
+  - Field
+  - Hand
   - 
   - 
   - 

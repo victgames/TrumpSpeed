@@ -42,15 +42,15 @@ public class GameDirector : MonoBehaviour
 
         foreach (Vector2 fieldPos in _fieldCardPosition)
         {
-            string tag = "FieldCard";
-            string sortingLayer = "Field";
+            string tag = TAG_FIELD;
+            string sortingLayer = SORT_LAYER_FIELD;
             DrawTopCard(fieldPos, tag, sortingLayer);
         }
 
         foreach (Vector2 drawnPos in _handCardPosition)
         {
-            string tag = "HandCard";
-            string sortingLayer = "Hand";
+            string tag = TAG_HAND;
+            string sortingLayer = SORT_LAYER_HAND;
             DrawTopCard(drawnPos, tag, sortingLayer);
         }
     }
@@ -71,7 +71,7 @@ public class GameDirector : MonoBehaviour
 
             if (cardObj != null)
             {
-                cardObj.tag = "DeckCard";
+                cardObj.tag = TAG_DECK;
 
                 CardController controller = cardObj.GetComponent<CardController>();
                 if (controller != null)
@@ -97,7 +97,7 @@ public class GameDirector : MonoBehaviour
             SpriteRenderer sr = entry.View.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingLayerName = "Deck";
+                sr.sortingLayerName = SORT_LAYER_DECK;
                 sr.sortingOrder = i;
             }
         }

@@ -6,19 +6,14 @@ public class CardController : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
 
-    /// <summary>このカードが持つスプライト（表・裏）</summary>
     private Sprite _faceSprite;
     private Sprite _backSprite;
 
     private bool _isDragging = false;
     private Vector3 _offset;
-
     private Vector3 _originalPosition;
 
-    [SerializeField]
     private GameObject _currentDropTarget = null;
-
-
 
     public Card Card { get; private set; }
 
@@ -27,21 +22,14 @@ public class CardController : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    /// <summary>
-    /// カードとそのスプライト情報をセット
-    /// </summary>
     public void SetCard(Card card, Sprite faceSprite, Sprite backSprite)
     {
         Card = card;
         _faceSprite = faceSprite;
         _backSprite = backSprite;
-
         UpdateSprite();
     }
 
-    /// <summary>
-    /// 表裏を切り替えてスプライトを更新
-    /// </summary>
     public void SetFaceUp(bool isFaceUp)
     {
         if (Card == null) return;
@@ -50,9 +38,6 @@ public class CardController : MonoBehaviour
         UpdateSprite();
     }
 
-    /// <summary>
-    /// 現在のカード状態に応じて表示スプライトを更新
-    /// </summary>
     public void UpdateSprite()
     {
         if (Card == null || _spriteRenderer == null) return;
@@ -60,52 +45,65 @@ public class CardController : MonoBehaviour
         _spriteRenderer.sprite = Card.IsFaceUp ? _faceSprite : _backSprite;
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
-        Debug.Log("Clicked!");
-        //_spriteRenderer.color = Color.red;
+        if (!CompareTag(TAG_HAND)) return;
+
         _isDragging = true;
-        //_offset = transform.position - GetMouseWorldPosition();
         _originalPosition = transform.position;
+        _offset = transform.position - GetMouseWorldPosition();
     }
 
-    void OnMouseUp()
+    private void OnMouseUp()
     {
+        if (!_isDragging) return;
+
         _isDragging = false;
-        //_spriteRenderer.color = Color.white;
 
         if (IsValidDropArea())
         {
-            // そのまま配置（例としてなにもしない）
-            Debug.Log("有効なドロップエリア！");
+            // ドロップ先にスナップ
+            transform.position = _currentDropTarget.transform.position;
+
+            // ソート順：既存FieldCardの最大orderを1つ上回る
+            int maxOrder = 0;
+            foreach (var col in Physics2D.OverlapPointAll(_currentDropTarget.transform.position))
+            {
+                if (col.CompareTag(TAG_FIELD))
+                {
+                    var sr = col.GetComponent<SpriteRenderer>();
+                    if (sr != null && sr.sortingOrder > maxOrder)
+                    {
+                        maxOrder = sr.sortingOrder;
+                    }
+                }
+            }
+
+            // レイヤー・タグ変更
+            _spriteRenderer.sortingLayerName = "Field";
+            _spriteRenderer.sortingOrder = maxOrder + 1;
+            tag = TAG_FIELD;
+
+            Debug.Log("HandCard を FieldCard にドロップしました（Layer変更済）");
         }
         else
         {
-            // 元の位置に戻す
             transform.position = _originalPosition;
+            _spriteRenderer.sortingLayerName = SORT_LAYER_FIELD;
         }
+
+        _currentDropTarget = null;
     }
 
-    void Update()
+    private void Update()
     {
         if (_isDragging)
         {
             transform.position = GetMouseWorldPosition() + _offset;
         }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-
-            if (hit.collider != null)
-            {
-                Debug.Log("クリックされたオブジェクト: " + hit.collider.name);
-            }
-        }
     }
 
-    Vector3 GetMouseWorldPosition()
+    private Vector3 GetMouseWorldPosition()
     {
         Vector3 screenPos = Input.mousePosition;
         screenPos.z = Camera.main.WorldToScreenPoint(transform.position).z;
@@ -114,17 +112,24 @@ public class CardController : MonoBehaviour
 
     private bool IsValidDropArea()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-
-        if (hit.collider != null && hit.collider.CompareTag("DropArea"))
-        {
-            _currentDropTarget = hit.collider.gameObject;
-            return true;
-        }
-
-        _currentDropTarget = null;
-        return false;
+        return _currentDropTarget != null;
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (CompareTag(TAG_HAND) && other.CompareTag(TAG_FIELD))
+        {
+            _currentDropTarget = other.gameObject;
+            Debug.Log("HandCard が FieldCard に重なった");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (_currentDropTarget == other.gameObject)
+        {
+            _currentDropTarget = null;
+            Debug.Log("HandCard が FieldCard から離れた");
+        }
+    }
 }

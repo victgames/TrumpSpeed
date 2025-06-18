@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 /// <summary>
@@ -5,6 +6,25 @@ using UnityEngine;
 /// </summary>
 public class Define
 {
+    // *******************************************************
+    // 定数
+    // *******************************************************
+
+    /// <summary>
+    /// タグ定義
+    /// </summary>
+    public const string TAG_DECK = "DeckCard";
+    public const string TAG_FIELD = "FieldCard";
+    public const string TAG_HAND = "HandCard";
+
+    /// <summary>
+    /// ソーティングレイヤー定義
+    /// </summary>
+    public const string SORT_LAYER_DECK = "Deck";
+    public const string SORT_LAYER_FIELD = "Field";
+    public const string SORT_LAYER_HAND = "Hand";
+
+
     /// <summary>
     /// カードを定義するクラス
     /// </summary>
