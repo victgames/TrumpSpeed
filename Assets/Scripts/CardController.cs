@@ -4,7 +4,11 @@ using static Define.Card;
 
 public class CardController : MonoBehaviour
 {
-    private SpriteRenderer _spriteRenderer;
+    // *******************************************************
+    // メンバ変数
+    // *******************************************************
+
+    //public SpriteRenderer _spriteRenderer;
 
     private Sprite _faceSprite;
     private Sprite _backSprite;
@@ -15,13 +19,28 @@ public class CardController : MonoBehaviour
 
     private GameObject _currentDropTarget = null;
 
-    public Card Card { get; private set; }
+    // *******************************************************
+    // プロパティ
+    // *******************************************************
+
+    public Card Card { get; set; }
+
+    public SpriteRenderer SpriteRenderer { get; set; }
+
+    // *******************************************************
+    // 基本メソッド
+    // *******************************************************
 
     private void Awake()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    // *******************************************************
+    // メソッド
+    // *******************************************************
+
+    /*
     public void SetCard(Card card, Sprite faceSprite, Sprite backSprite)
     {
         Card = card;
@@ -29,7 +48,9 @@ public class CardController : MonoBehaviour
         _backSprite = backSprite;
         UpdateSprite();
     }
+    */
 
+    /*
     public void SetFaceUp(bool isFaceUp)
     {
         if (Card == null) return;
@@ -37,12 +58,13 @@ public class CardController : MonoBehaviour
         Card.IsFaceUp = isFaceUp;
         UpdateSprite();
     }
+    */
 
     public void UpdateSprite()
     {
-        if (Card == null || _spriteRenderer == null) return;
+        if (Card == null || SpriteRenderer == null) return;
 
-        _spriteRenderer.sprite = Card.IsFaceUp ? _faceSprite : _backSprite;
+        SpriteRenderer.sprite = Card.IsFaceUp ? Card.FaceSprite : Card.BackSprite;
     }
 
     private void OnMouseDown()
@@ -61,35 +83,35 @@ public class CardController : MonoBehaviour
         _isDragging = false;
 
         if (IsValidDropArea())
-        {
-            // ドロップ先にスナップ
-            transform.position = _currentDropTarget.transform.position;
+    {
+        // ドロップ先にスナップ
+        transform.position = _currentDropTarget.transform.position;
 
-            // ソート順：既存FieldCardの最大orderを1つ上回る
-            int maxOrder = 0;
-            foreach (var col in Physics2D.OverlapPointAll(_currentDropTarget.transform.position))
+        // ソート順：既存FieldCardの最大orderを1つ上回る
+        int maxOrder = 0;
+        foreach (var col in Physics2D.OverlapPointAll(_currentDropTarget.transform.position))
+        {
+            if (col.CompareTag(TAG_FIELD))
             {
-                if (col.CompareTag(TAG_FIELD))
+                var sr = col.GetComponent<SpriteRenderer>();
+                if (sr != null && sr.sortingOrder > maxOrder)
                 {
-                    var sr = col.GetComponent<SpriteRenderer>();
-                    if (sr != null && sr.sortingOrder > maxOrder)
-                    {
-                        maxOrder = sr.sortingOrder;
-                    }
+                    maxOrder = sr.sortingOrder;
                 }
             }
-
-            // レイヤー・タグ変更
-            _spriteRenderer.sortingLayerName = "Field";
-            _spriteRenderer.sortingOrder = maxOrder + 1;
-            tag = TAG_FIELD;
-
-            Debug.Log("HandCard を FieldCard にドロップしました（Layer変更済）");
         }
+
+        // レイヤー・タグ変更
+        SpriteRenderer.sortingLayerName = "Field";
+        SpriteRenderer.sortingOrder = maxOrder + 1;
+        tag = TAG_FIELD;
+
+        Debug.Log("HandCard を FieldCard にドロップしました（Layer変更済）");
+    }
         else
         {
             transform.position = _originalPosition;
-            _spriteRenderer.sortingLayerName = SORT_LAYER_FIELD;
+            SpriteRenderer.sortingLayerName = SORT_LAYER_FIELD;
         }
 
         _currentDropTarget = null;
@@ -131,5 +153,13 @@ public class CardController : MonoBehaviour
             _currentDropTarget = null;
             Debug.Log("HandCard が FieldCard から離れた");
         }
+    }
+
+    public void SetSorting(string layerName, int order)
+    {
+        if (SpriteRenderer == null) return;
+
+        SpriteRenderer.sortingLayerName = layerName;
+        SpriteRenderer.sortingOrder = order;
     }
 }

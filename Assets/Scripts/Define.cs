@@ -1,3 +1,5 @@
+#nullable enable
+using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
@@ -23,6 +25,26 @@ public class Define
     public const string SORT_LAYER_DECK = "Deck";
     public const string SORT_LAYER_FIELD = "Field";
     public const string SORT_LAYER_HAND = "Hand";
+
+    /// <summary>
+    /// 表示位置
+    /// </summary>
+    public static readonly Vector3 POS_DECK = new Vector3(7.0f, -2.0f, 0.0f);
+    public static readonly Vector3 POS_DECK_OFFSET = new Vector3(0.01f, -0.01f, 0.01f);
+    public static readonly List<Vector2> POS_FIELD = new List<Vector2>
+    {
+        new Vector3(-3.6f, 1.0f, 0.0f),
+        new Vector3(-1.2f, 1.0f, 0.0f),
+        new Vector3( 1.2f, 1.0f, 0.0f),
+        new Vector3( 3.6f, 1.0f, 0.0f)
+    };
+    public static readonly List<Vector2> POS_HAND = new List<Vector2>
+    {
+        new Vector3(-4.5f, -2.0f, 0.0f),
+        new Vector3(-1.5f, -2.0f, 0.0f),
+        new Vector3( 1.5f, -2.0f, 0.0f),
+        new Vector3( 4.5f, -2.0f, 0.0f)
+    };
 
 
     /// <summary>
@@ -53,7 +75,11 @@ public class Define
         {
             Both        = 0,    // 両方使用
             BlackOnly   = 1,    // 黒のみ
-            RedOnly     = 2     // 赤のみ
+            RedOnly     = 2,    // 赤のみ
+            SpadeOnly   = 3,    // スペード
+            ClubOnly    = 4,    // クラブ
+            DiamondOnly = 5,    // ダイヤ
+            HeartOnly   = 6,    // ハート
         }
 
         /// <summary>
@@ -95,6 +121,16 @@ public class Define
         public BackSpriteColor BackColor { get; private set; }
 
         /// <summary>
+        /// 表面絵柄
+        /// </summary>
+        public Sprite FaceSprite { get; private set; }
+
+        /// <summary>
+        /// 裏面絵柄
+        /// </summary>
+        public Sprite BackSprite { get; private set; }
+
+        /// <summary>
         /// 裏表
         /// </summary>
         public bool IsFaceUp { get; set; }
@@ -102,17 +138,7 @@ public class Define
         /// <summary>
         /// 位置
         /// </summary>
-        public Vector2 SpawnPosition { get; set; }
-
-        /// <summary>
-        /// タグ
-        /// </summary>
-        //public string Tag { get; set; }
-
-        /// <summary>
-        /// ソーティングレイヤー
-        /// </summary>
-        //public string SortingLayerName { get; set; }
+        public Vector3 Position { get; set; }
 
 
         // *******************************************************
@@ -122,19 +148,22 @@ public class Define
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="suit">スート</param>
-        /// <param name="number">数字</param>
-        /// <param name="isFaceUp">裏表</param>
-        /// <param name="spawnPosition">位置</param>
-        public Card(SuitType suit, int number, BackSpriteColor backColor, bool isFaceUp, Vector2 spawnPosition)//, string tag, string sortingLayer)
+        /// <param name="suit"></param>
+        /// <param name="number"></param>
+        /// <param name="backColor"></param>
+        /// <param name="faceSprite"></param>
+        /// <param name="backSprite"></param>
+        /// <param name="isFaceUp"></param>
+        /// <param name="spawnPosition"></param>
+        public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite faceSprite, Sprite backSprite, bool isFaceUp, Vector3 spawnPosition)
         {
             Suit = suit;
             Number = number;
             BackColor = backColor;
+            FaceSprite = faceSprite;
+            BackSprite = backSprite;
             IsFaceUp = isFaceUp;
-            SpawnPosition = spawnPosition;
-            //Tag = tag;
-            //SortingLayerName = sortingLayer;
+            Position = spawnPosition;
         }
     }
 

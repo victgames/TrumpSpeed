@@ -2,77 +2,80 @@ using static Define.Card;
 using static Define;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class GameDirector : MonoBehaviour
 {
-    [SerializeField] private CardGenerator _cardGenerator;
+    // *******************************************************
+    // メンバ変数
+    // *******************************************************
+
+    [SerializeField] 
+    private CardGenerator _cardGenerator;
 
     private List<CardEntry> _deckEntries = new List<CardEntry>();
 
-    private Vector2 _deckBasePosition = new Vector2(7.0f, -2.0f);
+    // *******************************************************
+    // プロパティ
+    // *******************************************************
 
-    private Vector2 _deckOffset = new Vector2(0.010f, -0.010f);
+    public bool[] HandCardCounts { get; private set; } = new bool[4];
 
-    private List<Vector2> _fieldCardPosition = new List<Vector2>
-    {
-        new Vector2(-3.6f, 1.0f),
-        new Vector2(-1.2f, 1.0f),
-        new Vector2( 1.2f, 1.0f),
-        new Vector2( 3.6f, 1.0f)
-    };
+    public int[] FieldCardCounts { get; private set; } = new int[4];
 
 
-    private List<Vector2> _handCardPosition = new List<Vector2>
-    {
-        new Vector2(-4.5f, -2.0f),
-        new Vector2(-1.5f, -2.0f),
-        new Vector2( 1.5f, -2.0f),
-        new Vector2( 4.5f, -2.0f)
-    };
+    // *******************************************************
+    // 基本メソッド
+    // *******************************************************
 
-    
-
+    /// <summary>
+    /// 開始時処理
+    /// </summary>
     void Start()
     {
         InitializeDeck();
+        //DisplayDeck();
 
-
-        // 生成後に位置や描画順の調整をDisplayDeckに任せる
-        DisplayDeck();
-
-        foreach (Vector2 fieldPos in _fieldCardPosition)
+        /*
+        for (int i = 0; i < POS_FIELD.Count; i++)
         {
-            string tag = TAG_FIELD;
-            string sortingLayer = SORT_LAYER_FIELD;
-            DrawTopCard(fieldPos, tag, sortingLayer);
+            DrawTopCard(POS_FIELD[i], TAG_FIELD, SORT_LAYER_FIELD);
+            FieldCardCounts[i] = 1; // 最初に1枚ずつ置いたので
         }
 
-        foreach (Vector2 drawnPos in _handCardPosition)
+        for (int i = 0; i < POS_HAND.Count; i++)
         {
-            string tag = TAG_HAND;
-            string sortingLayer = SORT_LAYER_HAND;
-            DrawTopCard(drawnPos, tag, sortingLayer);
+            DrawTopCard(POS_HAND[i], TAG_HAND, SORT_LAYER_HAND);
+            HandCardCounts[i] = true; // 最初に1枚置いたので
         }
+        */
     }
 
+    // *******************************************************
+    // メソッド
+    // *******************************************************
+
+    /// <summary>
+    /// デッキ作成
+    /// </summary>
     private void InitializeDeck()
     {
+        // デッキエントリーを初期化
         _deckEntries.Clear();
 
-        List<Card> cardDataList = _cardGenerator.CreateDeck(SuitColorMode.Both, UseJoker.One);
+        // デッキリストを作成
+        List<Card> cardDataList = _cardGenerator.CreateDeck(SuitColorMode.Both, UseJoker.One, BackSpriteColor.Red);
         _cardGenerator.Shuffle(cardDataList);
 
         for (int i = 0; i < cardDataList.Count; i++)
         {
-            Vector2 pos = _deckBasePosition + _deckOffset * i;
+            // カードを生成
+            Vector3 pos = POS_DECK + POS_DECK_OFFSET * i;
+            GameObject cardObj = _cardGenerator.GenerateCard(cardDataList[i], pos, false, TAG_DECK, SORT_LAYER_DECK, i);
 
-            List<Card> singleCardList = new List<Card> { cardDataList[i] };
-            GameObject cardObj = _cardGenerator.GenerateCard(singleCardList, pos, false, BackSpriteColor.Blue);
-
+            // デッキエントリーに格納
             if (cardObj != null)
             {
-                cardObj.tag = TAG_DECK;
-
                 CardController controller = cardObj.GetComponent<CardController>();
                 if (controller != null)
                 {
@@ -84,25 +87,33 @@ public class GameDirector : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// デッキ表示
+    /// </summary>
     private void DisplayDeck()
     {
         for (int i = 0; i < _deckEntries.Count; i++)
         {
+            // CardEntryを探索
             CardEntry entry = _deckEntries[i];
-            Vector3 pos = (Vector3)(_deckBasePosition + _deckOffset * i);
-            pos.z = -i * 0.01f; // Z軸をずらす
 
+            // 位置を変更
+            Vector3 pos = POS_DECK + POS_DECK_OFFSET * i;
             entry.View.transform.position = pos;
+            entry.Data.Position = pos;
 
-            SpriteRenderer sr = entry.View.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                sr.sortingLayerName = SORT_LAYER_DECK;
-                sr.sortingOrder = i;
-            }
+            // SpriteRendererのパラメータ変更
+            entry.View.GetComponent<CardController>()?.SetSorting(SORT_LAYER_DECK, i);
         }
     }
 
+    /// <summary>
+    /// デッキ1枚目を引く処理
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="tag"></param>
+    /// <param name="sortLayer"></param>
+    /// <returns></returns>
     public CardEntry DrawTopCard(Vector2 pos, string tag, string sortLayer)
     {
         if (_deckEntries.Count == 0) return null;
@@ -125,10 +136,11 @@ public class GameDirector : MonoBehaviour
         CardController controller = topCard.View.GetComponent<CardController>();
         if (controller != null)
         {
-            controller.SetFaceUp(true);
-            controller.Card.SpawnPosition = pos;
+            //controller.SetFaceUp(true);
+            controller.Card.Position = pos;
         }
 
         return topCard;
     }
+
 }
