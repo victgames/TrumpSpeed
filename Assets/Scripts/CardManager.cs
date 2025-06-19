@@ -1,135 +1,12 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-using static Define.Card;
 
 public class CardManager : MonoBehaviour
 {
     // *******************************************************
-    // メンバ変数
-    // *******************************************************
-
-    /// <summary>
-    /// カードのプレハブ
-    /// </summary>
-    [SerializeField]
-    private GameObject _cardPrefab;
-
-    /// <summary>
-    /// 52枚＋ジョーカー分の表面スプライト（インスペクタでセット）
-    /// </summary>
-    [SerializeField]
-    private Sprite[] _faceSprites;
-
-    /// <summary>
-    /// カード裏面スプライト（0:赤, 1:青）（インスペクタでセット）
-    /// </summary>
-    [SerializeField]
-    private Sprite[] _backSprites;
-
-    // *******************************************************
     // メソッド
     // *******************************************************
-
-    /// <summary>
-    /// カードリスト作成
-    /// </summary>
-    /// <param name="colorMode"></param>
-    /// <param name="includeJoker"></param>
-    /// <returns></returns>
-    public List<Card> CreateCardList(SuitColorMode colorMode, UseJoker includeJoker, BackSpriteColor backColor)
-    {
-        List<Card> deck = new List<Card>();
-
-        // SuitTypeすべての値を順に列挙してsuitに代入
-        foreach (SuitType suit in Enum.GetValues(typeof(SuitType)))
-        {
-            // Jokerを除外
-            if (suit == SuitType.Joker) continue;
-
-            // SuitColorModeに併せてカードリストに含めないカードを除外
-            if (colorMode == SuitColorMode.BlackOnly && (suit != SuitType.Spade && suit != SuitType.Club)) continue;
-            if (colorMode == SuitColorMode.RedOnly && (suit != SuitType.Heart && suit != SuitType.Diamond)) continue;
-            if (colorMode == SuitColorMode.SpadeOnly && (suit != SuitType.Spade)) continue;
-            if (colorMode == SuitColorMode.ClubOnly && (suit != SuitType.Club)) continue;
-            if (colorMode == SuitColorMode.DiamondOnly && (suit != SuitType.Diamond)) continue;
-            if (colorMode == SuitColorMode.HeartOnly && (suit != SuitType.Heart)) continue;
-
-            // 1～13までの数字で初期化
-            for (int num = 1; num <= 13; num++)
-            {
-                Sprite faceSprite = GetFaceSprite(suit, num);
-                Sprite backSprite = _backSprites[(int)backColor];
-                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, Vector2.zero));
-            }
-        }
-
-        // Jokerの枚数初期化
-        for (int i = 0; i < (int)includeJoker; i++)
-        {
-            // Jokerは_faceSpritesの53番目以降に配置
-            Sprite faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
-            Sprite backSprite = _backSprites[(int)backColor];
-            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, Vector2.zero));
-        }
-
-        return deck;
-    }
-
-    /// <summary>
-    /// カードを生成
-    /// </summary>
-    /// <param name="cardData"></param>
-    /// <param name="position"></param>
-    /// <param name="isFaceUp"></param>
-    /// <returns></returns>
-    public GameObject GenerateCard(Card cardData, Vector3 position, string tag, string sortingLayer)
-    {
-        if (cardData == null)
-        {
-            return null;
-        }
-
-        GameObject cardObj = Instantiate(_cardPrefab, position, Quaternion.identity);
-        CardController controller = cardObj.GetComponent<CardController>();
-
-        if (controller != null)
-        {
-            controller.Card = cardData;
-            controller.UpdateSprite();
-            controller.tag = tag;
-            controller.SpriteRenderer.sortingLayerName = sortingLayer;
-        }
-
-        return cardObj;
-    }
-
-
-    /// <summary>
-    /// 表面スプライトを探索
-    /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    /// <returns></returns>
-    private Sprite GetFaceSprite(SuitType suit, int number)
-    {
-        // ジョーカーの場合は入力値のスプライトを取得
-        if (suit == SuitType.Joker)
-        {
-            return _faceSprites[number];
-        }
-
-        // 数字の場合はsuitと数字で合致するスプライトを探索
-        int index = ((int)suit) * 13 + (number - 1);
-        if (index >= 0 && index < _faceSprites.Length)
-        {
-            return _faceSprites[index];
-        }
-
-        return null;
-    }
-    
 
     /// <summary>
     /// 山札を表示
@@ -141,12 +18,11 @@ public class CardManager : MonoBehaviour
         {
             // カードの位置を変更して再表示
             CardEntry entry = entries[i];
-
             entry.View.transform.position = pos + offset * i;
             entry.Data.Position = pos + offset * i;
 
             // カードの位置情報を変更
-            entry.View.GetComponent<CardController>()?.SetSorting(SORT_LAYER_DECK, i);
+            entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(entry.Data.CardProperty), i);
         }
     }
 
@@ -156,6 +32,7 @@ public class CardManager : MonoBehaviour
     /// <param name="deck"></param>
     public void Shuffle(List<CardEntry> deck)
     {
+        // i番目と, i以降のランダムに選ばれたj番目を入れ替える
         for (int i = 0; i < deck.Count; i++)
         {
             int j = UnityEngine.Random.Range(i, deck.Count);
@@ -163,40 +40,39 @@ public class CardManager : MonoBehaviour
         }
     }
 
-
     /// <summary>
-    /// デッキ1枚目を引く処理
+    /// 山札から1枚引き, 場札または手札に加える
     /// </summary>
-    /// <param name="pos"></param>
-    /// <param name="tag"></param>
-    /// <param name="sortLayer"></param>
-    /// <returns></returns>
-    public CardEntry DrawTopCard(List<CardEntry> entries, Vector3 pos, string tag, string sortLayer)
+    /// <param name="oldEntries"></param>
+    /// <param name="newEntries"></param>
+    /// <param name="cardProperty"></param>
+    /// <param name="position"></param>
+    public void DrawTopCard(List<CardEntry> oldEntries, List<CardEntry> newEntries, CardProperty cardProperty, IReadOnlyList<Vector3> position)
     {
-        if (entries.Count == 0) return null;
-
-        CardEntry topCard = entries[0];
-        entries.RemoveAt(0);
-
-        //DisplayDeck();
-
-        topCard.View.transform.position = pos;
-        topCard.View.tag = tag;
-
-        SpriteRenderer sr = topCard.View.GetComponent<SpriteRenderer>();
-        if (sr != null)
+        for (int i = 0; i < position.Count; i++)
         {
-            sr.sortingLayerName = sortLayer;
-            sr.sortingOrder = 0; // 必要に応じて調整してください
-        }
+            if (oldEntries.Count == 0) break;
 
-        CardController controller = topCard.View.GetComponent<CardController>();
-        if (controller != null)
-        {
-            //controller.SetFaceUp(true);
-            controller.Card.Position = pos;
-        }
+            // 山札から先頭のカードを取り出す
+            CardEntry entry = oldEntries[0];
+            oldEntries.RemoveAt(0);
 
-        return topCard;
+            // 所属を更新
+            entry.Data.CardProperty = cardProperty;
+
+            // 表示位置を更新
+            entry.View.transform.position = position[i];
+            entry.Data.Position = position[i];
+
+            // 表裏を更新
+            entry.Data.IsFaceUp = true;
+            entry.View.GetComponent<CardController>()?.SetSprite(entry.Data.IsFaceUp);
+
+            // ソート情報を更新
+            entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardProperty), 0);
+
+            // 場札リストに追加
+            newEntries.Add(entry);
+        }
     }
 }

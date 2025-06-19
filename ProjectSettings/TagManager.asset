@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - DeckCard
-  - FieldCard
-  - HandCard
+  - Card
   layers:
   - Default
   - TransparentFX
