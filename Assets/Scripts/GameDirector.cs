@@ -1,8 +1,7 @@
-using static Define.Card;
-using static Define;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
+using static Define;
+using static Define.Card;
 
 public class GameDirector : MonoBehaviour
 {
@@ -10,17 +9,29 @@ public class GameDirector : MonoBehaviour
     // メンバ変数
     // *******************************************************
 
+    /// <summary>
+    /// カードを生成するコンポーネント
+    /// </summary>
     [SerializeField] 
-    private CardGenerator _cardGenerator;
+    private CardManager _cardManager;
 
-    private List<CardEntry> _deckEntries = new List<CardEntry>();
+    /// <summary>
+    /// カード情報リスト
+    /// </summary>
+    private List<CardEntry> _CardEntriesRed = new List<CardEntry>();
 
     // *******************************************************
     // プロパティ
     // *******************************************************
 
+    /// <summary>
+    /// 手札枚数情報
+    /// </summary>
     public bool[] HandCardCounts { get; private set; } = new bool[4];
 
+    /// <summary>
+    /// 場札枚数情報
+    /// </summary>
     public int[] FieldCardCounts { get; private set; } = new int[4];
 
 
@@ -33,8 +44,12 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void Start()
     {
-        InitializeDeck();
-        //DisplayDeck();
+        // カードリストを作成
+        InitializeDeckEntries(_CardEntriesRed, SuitColorMode.Both, UseJoker.One, BackSpriteColor.Red);
+        
+        // シャッフル後山札を表示
+        _cardManager.Shuffle(_CardEntriesRed);
+        _cardManager.DisplayDeck(_CardEntriesRed, POS_DECK, POS_DECK_OFFSET);
 
         /*
         for (int i = 0; i < POS_FIELD.Count; i++)
@@ -56,91 +71,33 @@ public class GameDirector : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// デッキ作成
+    /// カード情報リスト作成
     /// </summary>
-    private void InitializeDeck()
+    private void InitializeDeckEntries(List<CardEntry> entries, SuitColorMode mode, UseJoker joker, BackSpriteColor color)
     {
-        // デッキエントリーを初期化
-        _deckEntries.Clear();
+        // カード情報リストを初期化
+        entries.Clear();
 
-        // デッキリストを作成
-        List<Card> cardDataList = _cardGenerator.CreateDeck(SuitColorMode.Both, UseJoker.One, BackSpriteColor.Red);
-        _cardGenerator.Shuffle(cardDataList);
+        // カード情報リストを作成
+        List<Card> cardDataList = _cardManager.CreateCardList(mode, joker, color);
 
         for (int i = 0; i < cardDataList.Count; i++)
         {
             // カードを生成
-            Vector3 pos = POS_DECK + POS_DECK_OFFSET * i;
-            GameObject cardObj = _cardGenerator.GenerateCard(cardDataList[i], pos, false, TAG_DECK, SORT_LAYER_DECK, i);
+            GameObject cardObj = _cardManager.GenerateCard(cardDataList[i], Vector3.zero, TAG_DECK, SORT_LAYER_DECK);
 
-            // デッキエントリーに格納
+            // カード情報リストに格納
             if (cardObj != null)
             {
                 CardController controller = cardObj.GetComponent<CardController>();
                 if (controller != null)
                 {
                     CardEntry entry = new CardEntry(cardDataList[i], controller);
-                    _deckEntries.Add(entry);
+                    entries.Add(entry);
                 }
             }
         }
-
     }
 
-    /// <summary>
-    /// デッキ表示
-    /// </summary>
-    private void DisplayDeck()
-    {
-        for (int i = 0; i < _deckEntries.Count; i++)
-        {
-            // CardEntryを探索
-            CardEntry entry = _deckEntries[i];
-
-            // 位置を変更
-            Vector3 pos = POS_DECK + POS_DECK_OFFSET * i;
-            entry.View.transform.position = pos;
-            entry.Data.Position = pos;
-
-            // SpriteRendererのパラメータ変更
-            entry.View.GetComponent<CardController>()?.SetSorting(SORT_LAYER_DECK, i);
-        }
-    }
-
-    /// <summary>
-    /// デッキ1枚目を引く処理
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <param name="tag"></param>
-    /// <param name="sortLayer"></param>
-    /// <returns></returns>
-    public CardEntry DrawTopCard(Vector2 pos, string tag, string sortLayer)
-    {
-        if (_deckEntries.Count == 0) return null;
-
-        CardEntry topCard = _deckEntries[0];
-        _deckEntries.RemoveAt(0);
-
-        DisplayDeck();
-
-        topCard.View.transform.position = pos;
-        topCard.View.tag = tag;
-
-        SpriteRenderer sr = topCard.View.GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.sortingLayerName = sortLayer;
-            sr.sortingOrder = 0; // 必要に応じて調整してください
-        }
-
-        CardController controller = topCard.View.GetComponent<CardController>();
-        if (controller != null)
-        {
-            //controller.SetFaceUp(true);
-            controller.Card.Position = pos;
-        }
-
-        return topCard;
-    }
 
 }

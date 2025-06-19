@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 1601098630}
   - component: {fileID: 1601098629}
   m_Layer: 0
-  m_Name: CardGenerator
+  m_Name: CardManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -475,7 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710fd9c716bf1db4d860a0eb3690c37f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardGenerator: {fileID: 1601098629}
+  _cardManager: {fileID: 1601098629}
 --- !u!4 &2092881923
 Transform:
   m_ObjectHideFlags: 0

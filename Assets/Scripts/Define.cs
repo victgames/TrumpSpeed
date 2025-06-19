@@ -9,8 +9,18 @@ using UnityEngine;
 public class Define
 {
     // *******************************************************
-    // 定数
+    // 列挙体
     // *******************************************************
+
+    /// <summary>
+    /// カードの所属
+    /// </summary>
+    public enum CardPlace
+    {
+        Deck,
+        Field,
+        Hand
+    }
 
     /// <summary>
     /// タグ定義
@@ -185,6 +195,11 @@ public class Define
         /// カードの見た目を制御するコンポーネント（GameObjectにアタッチ）
         /// </summary>
         public CardController View { get; private set; }
+
+        /// <summary>
+        /// カードの所属
+        /// </summary>
+        public CardPlace CardPlace { get; private set; }
 
 
         // *******************************************************
