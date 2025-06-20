@@ -54,7 +54,8 @@ public class CardGenerator : MonoBehaviour
                 CardController controller = cardObj.GetComponent<CardController>();
                 if (controller != null)
                 {
-                    CardEntry entry = new CardEntry(cardDataList[i], controller);
+
+                    CardEntry entry = new CardEntry(cardDataList[i], controller, 0);
                     entries.Add(entry);
                 }
             }

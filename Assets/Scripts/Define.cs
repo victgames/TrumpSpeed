@@ -1,20 +1,20 @@
-#nullable enable
+ï»¿#nullable enable
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using static Define;
 
 /// <summary>
-/// ’è‹`—pƒNƒ‰ƒX
+/// å®šç¾©ç”¨ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class Define
 {
     // *******************************************************
-    // —ñ‹“‘Ì
+    // åˆ—æŒ™ä½“
     // *******************************************************
 
     /// <summary>
-    /// ƒJ[ƒh‚ÌŠ‘®
+    /// ã‚«ãƒ¼ãƒ‰ã®æ‰€å±
     /// </summary>
     public enum CardProperty
     {
@@ -24,60 +24,60 @@ public class Define
     }
 
     /// <summary>
-    /// ƒgƒ‰ƒ“ƒv‚ÌƒX[ƒg’è‹`
+    /// ãƒˆãƒ©ãƒ³ãƒ—ã®ã‚¹ãƒ¼ãƒˆå®šç¾©
     /// </summary>
     public enum SuitType
     {
-        Spade = 0,        // ƒXƒy[ƒh
-        Club = 1,        // ƒNƒ‰ƒu
-        Diamond = 2,        // ƒ_ƒCƒ„
-        Heart = 3,        // ƒn[ƒg
-        Joker = 4         // ƒWƒ‡[ƒJ[
+        Spade = 0,        // ã‚¹ãƒšãƒ¼ãƒ‰
+        Club = 1,        // ã‚¯ãƒ©ãƒ–
+        Diamond = 2,        // ãƒ€ã‚¤ãƒ¤
+        Heart = 3,        // ãƒãƒ¼ãƒˆ
+        Joker = 4         // ã‚¸ãƒ§ãƒ¼ã‚«ãƒ¼
     }
 
     /// <summary>
-    /// ƒgƒ‰ƒ“ƒv‚Ìg—pF
+    /// ãƒˆãƒ©ãƒ³ãƒ—ã®ä½¿ç”¨è‰²
     /// </summary>
     public enum SuitColorMode
     {
-        Both = 0,    // —¼•ûg—p
-        BlackOnly = 1,    // •‚Ì‚İ
-        RedOnly = 2,    // Ô‚Ì‚İ
-        SpadeOnly = 3,    // ƒXƒy[ƒh
-        ClubOnly = 4,    // ƒNƒ‰ƒu
-        DiamondOnly = 5,    // ƒ_ƒCƒ„
-        HeartOnly = 6,    // ƒn[ƒg
+        Both = 0,    // ä¸¡æ–¹ä½¿ç”¨
+        BlackOnly = 1,    // é»’ã®ã¿
+        RedOnly = 2,    // èµ¤ã®ã¿
+        SpadeOnly = 3,    // ã‚¹ãƒšãƒ¼ãƒ‰
+        ClubOnly = 4,    // ã‚¯ãƒ©ãƒ–
+        DiamondOnly = 5,    // ãƒ€ã‚¤ãƒ¤
+        HeartOnly = 6,    // ãƒãƒ¼ãƒˆ
     }
 
     /// <summary>
-    /// ƒWƒ‡[ƒJ[‚Ìg—p
+    /// ã‚¸ãƒ§ãƒ¼ã‚«ãƒ¼ã®ä½¿ç”¨
     /// </summary>
     public enum UseJoker
     {
-        None = 0,        // ƒWƒ‡[ƒJ[‚È‚µ
-        One = 1,        // 1–‡g—p
-        Two = 2         // 2–‡g—p
+        None = 0,        // ã‚¸ãƒ§ãƒ¼ã‚«ãƒ¼ãªã—
+        One = 1,        // 1æšä½¿ç”¨
+        Two = 2         // 2æšä½¿ç”¨
     }
 
     /// <summary>
-    /// ƒJ[ƒh— –Ê‚ÌŠG•¿
+    /// ã‚«ãƒ¼ãƒ‰è£é¢ã®çµµæŸ„
     /// </summary>
     public enum BackSpriteColor
     {
-        Red = 0,        // Ô
-        Blue = 1         // Â
+        Red = 0,        // èµ¤
+        Blue = 1         // é’
     }
 
     
     /// <summary>
-    /// ƒ^ƒO’è‹`
+    /// ã‚¿ã‚°å®šç¾©
     /// </summary>
     public const string TAG_DECK = "DeckCard";
     public const string TAG_FIELD = "FieldCard";
     public const string TAG_HAND = "HandCard";
 
     /// <summary>
-    /// ƒ\[ƒeƒBƒ“ƒOƒŒƒCƒ„[’è‹`
+    /// ã‚½ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãƒ¬ã‚¤ãƒ¤ãƒ¼å®šç¾©
     /// </summary>
     public const string SORT_LAYER_DECK = "Deck";
     public const string SORT_LAYER_FIELD = "Field";
@@ -85,17 +85,17 @@ public class Define
     
 
     /// <summary>
-    /// •\¦ˆÊ’u
+    /// è¡¨ç¤ºä½ç½®
     /// </summary>
     public class Position
     {
-        /// <summary>RD‚ÌŠî€ˆÊ’u</summary>
+        /// <summary>å±±æœ­ã®åŸºæº–ä½ç½®</summary>
         public static readonly Vector3 Deck = new Vector3(7.0f, -2.0f, 0.0f);
 
-        /// <summary>RD“à‚ÌƒJ[ƒhŠÔ‚ÌƒIƒtƒZƒbƒg</summary>
+        /// <summary>å±±æœ­å†…ã®ã‚«ãƒ¼ãƒ‰é–“ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ</summary>
         public static readonly Vector3 DeckOffset = new Vector3(0.01f, -0.01f, 0.01f);
 
-        /// <summary>êD‚Ì•\¦ˆÊ’uƒŠƒXƒg</summary>
+        /// <summary>å ´æœ­ã®è¡¨ç¤ºä½ç½®ãƒªã‚¹ãƒˆ</summary>
         public static readonly IReadOnlyList<Vector3> Field = new List<Vector3>
         {
             new Vector3(-3.6f, 1.0f, 0.0f),
@@ -104,7 +104,7 @@ public class Define
             new Vector3( 3.6f, 1.0f, 0.0f)
         };
 
-        /// <summary>èD‚Ì•\¦ˆÊ’uƒŠƒXƒg</summary>
+        /// <summary>æ‰‹æœ­ã®è¡¨ç¤ºä½ç½®ãƒªã‚¹ãƒˆ</summary>
         public static readonly IReadOnlyList<Vector3> Hand = new List<Vector3>
         {
             new Vector3(-4.5f, -2.0f, 0.0f),
@@ -118,7 +118,7 @@ public class Define
 }
 
 /// <summary>
-/// ƒ\[ƒgƒŒƒCƒ„[–¼‚ğ’è‹`‚·‚éƒNƒ‰ƒX
+/// ã‚½ãƒ¼ãƒˆãƒ¬ã‚¤ãƒ¤ãƒ¼åã‚’å®šç¾©ã™ã‚‹ã‚¯ãƒ©ã‚¹
 /// </summary>
 public static class SortLayers
 {
@@ -136,61 +136,60 @@ public static class SortLayers
 
 
 /// <summary>
-/// ƒJ[ƒh‚ğ’è‹`‚·‚éƒNƒ‰ƒX
+/// ã‚«ãƒ¼ãƒ‰ã‚’å®šç¾©ã™ã‚‹ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class Card
 {
     // *******************************************************
-    // ƒvƒƒpƒeƒB
+    // ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     // *******************************************************
 
     /// <summary>
-    /// ƒX[ƒg
+    /// ã‚¹ãƒ¼ãƒˆ
     /// </summary>
     public SuitType Suit { get; private set; }
 
     /// <summary>
-    /// ”ši1`13, Joker‚Í0j
+    /// æ•°å­—ï¼ˆ1ï½13, Jokerã¯0ï¼‰
     /// </summary>
     public int Number { get; private set; }
 
     /// <summary>
-    /// ƒJ[ƒh— –Ê‚ÌŠG•¿
+    /// ã‚«ãƒ¼ãƒ‰è£é¢ã®çµµæŸ„
     /// </summary>
     public BackSpriteColor BackColor { get; private set; }
 
     /// <summary>
-    /// •\–ÊŠG•¿
+    /// è¡¨é¢çµµæŸ„
     /// </summary>
     public Sprite FaceSprite { get; private set; }
 
     /// <summary>
-    /// — –ÊŠG•¿
+    /// è£é¢çµµæŸ„
     /// </summary>
     public Sprite BackSprite { get; private set; }
 
     /// <summary>
-    /// — •\
+    /// è£è¡¨
     /// </summary>
     public bool IsFaceUp { get; set; }
 
     /// <summary>
-    /// ƒJ[ƒh‚ÌŠ‘®
+    /// ã‚«ãƒ¼ãƒ‰ã®æ‰€å±
     /// </summary>
     public CardProperty CardProperty { get; set; }
 
     /// <summary>
-    /// ˆÊ’u
+    /// ä½ç½®
     /// </summary>
     public Vector3 Position { get; set; }
 
-
     // *******************************************************
-    // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     // *******************************************************
 
     /// <summary>
-    /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    /// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     /// </summary>
     /// <param name="suit"></param>
     /// <param name="number"></param>
@@ -214,36 +213,42 @@ public class Card
 }
 
 /// <summary>
-/// ƒJ[ƒh‚Ì•\¦‡‚ğ’è‹`‚·‚éƒNƒ‰ƒX
+/// ã‚«ãƒ¼ãƒ‰ã®è¡¨ç¤ºé †ã‚’å®šç¾©ã™ã‚‹ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class CardEntry
 {
     // *******************************************************
-    // ƒvƒƒpƒeƒB
+    // ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     // *******************************************************
 
     /// <summary>
-    /// ƒJ[ƒh‚Ìƒf[ƒ^iƒX[ƒgE”šE— •\‚È‚Çj
+    /// ã‚«ãƒ¼ãƒ‰ã®ãƒ‡ãƒ¼ã‚¿ï¼ˆã‚¹ãƒ¼ãƒˆãƒ»æ•°å­—ãƒ»è£è¡¨ãªã©ï¼‰
     /// </summary>
     public Card Data { get; private set; }
 
     /// <summary>
-    /// ƒJ[ƒh‚ÌŒ©‚½–Ú‚ğ§Œä‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒgiGameObject‚ÉƒAƒ^ƒbƒ`j
+    /// ã‚«ãƒ¼ãƒ‰ã®è¦‹ãŸç›®ã‚’åˆ¶å¾¡ã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆï¼ˆGameObjectã«ã‚¢ã‚¿ãƒƒãƒï¼‰
     /// </summary>
     public CardController View { get; private set; }
 
+    /// <summary>
+    /// å ´ã®ã‚¹ãƒ­ãƒƒãƒˆä½ç½®ï¼ˆ0ã€œ3ãªã©ï¼‰
+    /// </summary>
+    public int SlotIndex { get; set; }
+
     // *******************************************************
-    // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     // *******************************************************
 
     /// <summary>
-    /// ƒJ[ƒh‚Ìƒf[ƒ^‚ÆŒ©‚½–Úi•\¦ƒIƒuƒWƒFƒNƒgj‚ğ1ƒZƒbƒg‚Å•Û‚·‚é
+    /// ã‚«ãƒ¼ãƒ‰ã®ãƒ‡ãƒ¼ã‚¿ã¨è¦‹ãŸç›®ï¼ˆè¡¨ç¤ºã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰ã‚’1ã‚»ãƒƒãƒˆã§ä¿æŒã™ã‚‹
     /// </summary>
-    /// <param name="data">ƒJ[ƒh‚Ìƒf[ƒ^</param>
-    /// <param name="view">ƒJ[ƒh•\¦—pƒRƒ“ƒ|[ƒlƒ“ƒg</param>
-    public CardEntry(Card data, CardController view)
+    /// <param name="data">ã‚«ãƒ¼ãƒ‰ã®ãƒ‡ãƒ¼ã‚¿</param>
+    /// <param name="view">ã‚«ãƒ¼ãƒ‰è¡¨ç¤ºç”¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ</param>
+    public CardEntry(Card data, CardController view, int slotIndex)
     {
         Data = data;
         View = view;
+        SlotIndex = slotIndex;
     }
 }

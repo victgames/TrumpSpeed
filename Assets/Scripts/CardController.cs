@@ -25,6 +25,8 @@ public class CardController : MonoBehaviour
 
     private GameObject _currentDropTarget = null;
 
+    public static event Action<CardController> OnDroppedToField;
+
     // *******************************************************
     // プロパティ
     // *******************************************************
@@ -52,6 +54,36 @@ public class CardController : MonoBehaviour
     }
 
     /// <summary>
+    /// 常時更新処理
+    /// </summary>
+    private void Update()
+    {
+        if (_isDragging)
+        {
+            // カードの位置をマウス位置にオフセットを加えて更新
+            Vector3 mousePos = GetMouseWorldPosition();
+            transform.position = mousePos + _offset;
+
+            // ドロップ候補の初期化（毎フレームリセット）
+            _currentDropTarget = null;
+
+            // マウス位置にある全ての2DコライダーからFieldカードを探索
+            Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
+            foreach (var col in hits)
+            {
+                // CardPropertyがFieldの場合
+                var cardCtrl = col.GetComponent<CardController>();
+                if (cardCtrl != null && cardCtrl.Card != null && cardCtrl.Card.CardProperty == CardProperty.Field)
+                {
+                    // ドロップ対象候補として設定
+                    _currentDropTarget = col.gameObject;
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// マウスクリック時処理
     /// </summary>
     private void OnMouseDown()
@@ -73,59 +105,29 @@ public class CardController : MonoBehaviour
     /// </summary>
     private void OnMouseUp()
     {
-        if (!_isDragging) return;
-
-        // ドラッグ解除状態にフラグ変更
-        _isDragging = false;
-
-        // 位置を変更できるエリアにいる場合に以下を処理
-        if (IsValidDropArea())
-        {
-            /*
-            // ドロップ先にスナップ
-            transform.position = _currentDropTarget.transform.position;
-
-            // ソート順：既存FieldCardの最大orderを1つ上回る
-            int maxOrder = 0;
-            foreach (var col in Physics2D.OverlapPointAll(_currentDropTarget.transform.position))
-            {
-                if (col.CompareTag(TAG_FIELD))
-                {
-                    var sr = col.GetComponent<SpriteRenderer>();
-                    if (sr != null && sr.sortingOrder > maxOrder)
-                    {
-                        maxOrder = sr.sortingOrder;
-                    }
-                }
-            }
-
-            // レイヤー・タグ変更
-            SpriteRenderer.sortingLayerName = "Field";
-            SpriteRenderer.sortingOrder = maxOrder + 1;
-            tag = TAG_FIELD;
-
-            Debug.Log("HandCard を FieldCard にドロップしました（Layer変更済）");
-            */
-        }
-        else
-        {
-            /*
-            transform.position = _originalPosition;
-            SpriteRenderer.sortingLayerName = SORT_LAYER_FIELD;
-            */
-        }
-
-        _currentDropTarget = null;
-    }
-
-    private void Update()
-    {
         if (_isDragging)
         {
-            // マウスとの差分だけ常に移動させる
-            transform.position = GetMouseWorldPosition() + _offset;
+            _isDragging = false;
+
+            if (IsValidDropArea() && _currentDropTarget != null)
+            {
+                // _currentDropTarget の位置にスナップ
+                transform.position = _currentDropTarget.transform.position;
+
+                // イベント通知
+                OnDroppedToField?.Invoke(this);
+            }
+            else
+            {
+                // 無効なら元の位置に戻す
+                transform.position = _originalPosition;
+            }
         }
     }
+
+
+
+
 
     // *******************************************************
     // メソッド
@@ -149,28 +151,20 @@ public class CardController : MonoBehaviour
 
     private bool IsValidDropArea()
     {
-        return _currentDropTarget != null;
+        // _currentDropTargetがnullならドロップ不可
+        if (_currentDropTarget == null) return false;
+
+        // _currentDropTargetのCardControllerを取得
+        var cardCtrl = _currentDropTarget.GetComponent<CardController>();
+        if (cardCtrl != null && cardCtrl.Card != null && cardCtrl.Card.CardProperty == CardProperty.Field)
+        {
+            return true;
+        }
+
+        return false;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        /*
-        if (CompareTag(TAG_HAND) && other.CompareTag(TAG_FIELD))
-        {
-            _currentDropTarget = other.gameObject;
-            Debug.Log("HandCard が FieldCard に重なった");
-        }
-        */
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (_currentDropTarget == other.gameObject)
-        {
-            _currentDropTarget = null;
-            Debug.Log("HandCard が FieldCard から離れた");
-        }
-    }
+    
 
     /// <summary>
     /// カード情報を更新
@@ -210,5 +204,27 @@ public class CardController : MonoBehaviour
             SpriteRenderer.sprite = Card.BackSprite;
         }
     }
+
+    /*
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (CompareTag(TAG_HAND) && other.CompareTag(TAG_FIELD))
+        {
+            _currentDropTarget = other.gameObject;
+            Debug.Log("HandCard が FieldCard に重なった");
+        }
+    }
+    */
+
+    /*
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (_currentDropTarget == other.gameObject)
+        {
+            _currentDropTarget = null;
+            Debug.Log("HandCard が FieldCard から離れた");
+        }
+    }
+    */
 
 }

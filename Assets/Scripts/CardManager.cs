@@ -23,6 +23,9 @@ public class CardManager : MonoBehaviour
 
             // カードの位置情報を変更
             entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(entry.Data.CardProperty), i);
+
+            // 山札は1つのため0に変更
+            entry.SlotIndex = 0;
         }
     }
 
@@ -71,8 +74,15 @@ public class CardManager : MonoBehaviour
             // ソート情報を更新
             entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardProperty), 0);
 
+            // 場のスロット位置を更新
+            entry.SlotIndex = i;
+
             // 場札リストに追加
             newEntries.Add(entry);
         }
+
+
+
     }
+    
 }
