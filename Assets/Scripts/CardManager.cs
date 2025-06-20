@@ -16,16 +16,19 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < entries.Count; i++)
         {
-            // カードの位置を変更して再表示
             CardEntry entry = entries[i];
+
+            // カードの位置を変更して再表示
             entry.View.transform.position = pos + offset * i;
-            entry.Data.Position = pos + offset * i;
+
+            // 所属を更新
+            entry.Data.CardProperty = CardProperty.Deck;
+
+            // 山札はスロット1つのため0に変更
+            entry.Data.SlotIndex = null;
 
             // カードの位置情報を変更
-            entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(entry.Data.CardProperty), i);
-
-            // 山札は1つのため0に変更
-            entry.SlotIndex = 0;
+            entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(CardProperty.Deck), i);
         }
     }
 
@@ -38,7 +41,7 @@ public class CardManager : MonoBehaviour
         // i番目と, i以降のランダムに選ばれたj番目を入れ替える
         for (int i = 0; i < deck.Count; i++)
         {
-            int j = UnityEngine.Random.Range(i, deck.Count);
+            int j = Random.Range(i, deck.Count);
             (deck[i], deck[j]) = (deck[j], deck[i]);
         }
     }
@@ -57,32 +60,29 @@ public class CardManager : MonoBehaviour
             if (oldEntries.Count == 0) break;
 
             // 山札から先頭のカードを取り出す
-            CardEntry entry = oldEntries[0];
-            oldEntries.RemoveAt(0);
+            int lastIndex = oldEntries.Count - 1;
+            CardEntry entry = oldEntries[lastIndex];
+
+            // 表示位置を更新
+            entry.View.transform.position = position[i];
 
             // 所属を更新
             entry.Data.CardProperty = cardProperty;
 
-            // 表示位置を更新
-            entry.View.transform.position = position[i];
-            entry.Data.Position = position[i];
-
-            // 表裏を更新
-            entry.Data.IsFaceUp = true;
-            entry.View.GetComponent<CardController>()?.SetSprite(entry.Data.IsFaceUp);
+            // 場のスロット位置を更新（1～4）
+            entry.Data.SlotIndex = i;
 
             // ソート情報を更新
             entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardProperty), 0);
 
-            // 場のスロット位置を更新
-            entry.SlotIndex = i;
+            // 表裏を更新
+            entry.Data.IsFaceUp = true;
+            entry.View.GetComponent<CardController>()?.UpdateSprite();
 
-            // 場札リストに追加
+            // 山札リストから削除, 場札リストに追加
+            oldEntries.RemoveAt(lastIndex);
             newEntries.Add(entry);
         }
-
-
-
     }
     
 }

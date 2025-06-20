@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,41 +29,10 @@ public class CardGenerator : MonoBehaviour
     [SerializeField]
     private Sprite[] _backSprites;
 
+
     // *******************************************************
     // メソッド
     // *******************************************************
-
-    /// <summary>
-    /// カード情報リスト作成
-    /// </summary>
-    public List<CardEntry> InitializeEntries(SuitColorMode mode, UseJoker joker, BackSpriteColor color, CardProperty cardProperty)
-    {
-        // カード情報リストを初期化
-        List<CardEntry> entries = new List<CardEntry>();
-
-        // カード情報リストを作成
-        List<Card> cardDataList = GenerateCardList(mode, joker, color, cardProperty);
-
-        for (int i = 0; i < cardDataList.Count; i++)
-        {
-            // カードを生成
-            GameObject cardObj = GenerateCard(cardDataList[i], Vector3.zero);
-
-            // カード情報リストに格納
-            if (cardObj != null)
-            {
-                CardController controller = cardObj.GetComponent<CardController>();
-                if (controller != null)
-                {
-
-                    CardEntry entry = new CardEntry(cardDataList[i], controller, 0);
-                    entries.Add(entry);
-                }
-            }
-        }
-
-        return entries;
-    }
 
     /// <summary>
     /// カードリスト作成
@@ -70,7 +40,7 @@ public class CardGenerator : MonoBehaviour
     /// <param name="colorMode"></param>
     /// <param name="includeJoker"></param>
     /// <returns></returns>
-    public List<Card> GenerateCardList(SuitColorMode colorMode, UseJoker includeJoker, BackSpriteColor backColor, CardProperty cardProperty)
+    public List<Card> InitializeCardList(SuitColorMode colorMode, UseJoker includeJoker, BackSpriteColor backColor)
     {
         List<Card> deck = new List<Card>();
 
@@ -91,9 +61,9 @@ public class CardGenerator : MonoBehaviour
             // 1～13までの数字で初期化
             for (int num = 1; num <= 13; num++)
             {
-                Sprite faceSprite = GetFaceSprite(suit, num);
-                Sprite backSprite = GetBackSprite(backColor);
-                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, cardProperty, Vector3.zero));
+                Sprite? faceSprite = GetFaceSprite(suit, num);
+                Sprite? backSprite = GetBackSprite(backColor);
+                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, CardProperty.None, null));
             }
         }
 
@@ -101,12 +71,40 @@ public class CardGenerator : MonoBehaviour
         for (int i = 0; i < (int)includeJoker; i++)
         {
             // Jokerは_faceSpritesの53番目以降に配置
-            Sprite faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
-            Sprite backSprite = GetBackSprite(backColor);
-            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, cardProperty, Vector3.zero));
+            Sprite? faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
+            Sprite? backSprite = GetBackSprite(backColor);
+            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, CardProperty.None, null));
         }
 
         return deck;
+    }
+
+    /// <summary>
+    /// カード情報リスト作成
+    /// </summary>
+    public List<CardEntry?> InitializeEntries(List<Card> cardDataList)
+    {
+        // カード情報リストを初期化
+        List<CardEntry?> entries = new List<CardEntry?>();
+
+        for (int i = 0; i < cardDataList.Count; i++)
+        {
+            // カードを生成
+            GameObject? cardObj = GenerateCard(cardDataList[i]);
+
+            // カード情報リストに格納
+            if (cardObj != null)
+            {
+                CardController controller = cardObj.GetComponent<CardController>();
+                if (controller != null)
+                {
+                    // 所属:None, インデックス:0として初期化
+                    CardEntry entry = new CardEntry(cardDataList[i], controller);//, CardProperty.None, 0);
+                    entries.Add(entry);
+                }
+            }
+        }
+        return entries;
     }
 
     /// <summary>
@@ -115,7 +113,7 @@ public class CardGenerator : MonoBehaviour
     /// <param name="cardData"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public GameObject GenerateCard(Card cardData, Vector3 position)
+    public GameObject? GenerateCard(Card cardData)
     {
         if (cardData == null)
         {
@@ -123,12 +121,16 @@ public class CardGenerator : MonoBehaviour
         }
 
         // カードインスタンス作成
-        GameObject cardObj = Instantiate(_cardPrefab, position, Quaternion.identity);
+        GameObject cardObj = Instantiate(_cardPrefab, Vector3.zero, Quaternion.identity);
 
         // インスタンスの情報を更新
-        cardObj.GetComponent<CardController>()?.SetCard(cardData);
-        cardObj.GetComponent<CardController>()?.SetSprite(cardData.IsFaceUp);
-        cardObj.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardData.CardProperty), 0);
+        var cardCtrl = cardObj.GetComponent<CardController>();
+        if (cardCtrl != null)
+        {
+            cardCtrl.Card = cardData;
+        }
+        cardObj.GetComponent<CardController>()?.UpdateSprite();
+        cardObj.GetComponent<CardController>()?.SetSorting(SortLayers.Name(CardProperty.None), 0);
 
         return cardObj;
     }
@@ -139,7 +141,7 @@ public class CardGenerator : MonoBehaviour
     /// <param name="suit"></param>
     /// <param name="number"></param>
     /// <returns></returns>
-    private Sprite GetFaceSprite(SuitType suit, int number)
+    private Sprite? GetFaceSprite(SuitType suit, int number)
     {
         // ジョーカーの場合は入力値のスプライトを取得
         if (suit == SuitType.Joker)
@@ -162,10 +164,8 @@ public class CardGenerator : MonoBehaviour
     /// </summary>
     /// <param name="backColor"></param>
     /// <returns></returns>
-    private Sprite GetBackSprite(BackSpriteColor backColor)
+    private Sprite? GetBackSprite(BackSpriteColor backColor)
     {
         return _backSprites[(int)backColor];
     }
-
-
 }

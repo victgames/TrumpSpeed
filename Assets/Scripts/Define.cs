@@ -18,6 +18,7 @@ public class Define
     /// </summary>
     public enum CardProperty
     {
+        None = 0,
         Deck,
         Field,
         Hand
@@ -67,7 +68,6 @@ public class Define
         Red = 0,        // 赤
         Blue = 1         // 青
     }
-
     
     /// <summary>
     /// タグ定義
@@ -113,8 +113,6 @@ public class Define
             new Vector3( 4.5f, -2.0f, 0.0f)
         };
     }
-
-
 }
 
 /// <summary>
@@ -126,6 +124,7 @@ public static class SortLayers
     {
         return layer switch
         {
+            CardProperty.None => "None",
             CardProperty.Deck => "Deck",
             CardProperty.Field => "Field",
             CardProperty.Hand => "Hand",
@@ -162,12 +161,12 @@ public class Card
     /// <summary>
     /// 表面絵柄
     /// </summary>
-    public Sprite FaceSprite { get; private set; }
+    public Sprite? FaceSprite { get; private set; }
 
     /// <summary>
     /// 裏面絵柄
     /// </summary>
-    public Sprite BackSprite { get; private set; }
+    public Sprite? BackSprite { get; private set; }
 
     /// <summary>
     /// 裏表
@@ -180,9 +179,9 @@ public class Card
     public CardProperty CardProperty { get; set; }
 
     /// <summary>
-    /// 位置
+    /// 場のスロット位置（0〜3など）
     /// </summary>
-    public Vector3 Position { get; set; }
+    public int? SlotIndex { get; set; }
 
     // *******************************************************
     // コンストラクタ
@@ -198,8 +197,8 @@ public class Card
     /// <param name="backSprite"></param>
     /// <param name="isFaceUp"></param>
     /// <param name="cardProperty"></param>
-    /// <param name="position"></param>
-    public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite faceSprite, Sprite backSprite, bool isFaceUp, CardProperty cardProperty, Vector3 position)
+    /// <param name="slotIndex"></param>
+    public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite? faceSprite, Sprite? backSprite, bool isFaceUp, CardProperty cardProperty, int? slotIndex)
     {
         Suit = suit;
         Number = number;
@@ -208,7 +207,7 @@ public class Card
         BackSprite = backSprite;
         IsFaceUp = isFaceUp;
         CardProperty = cardProperty;
-        Position = position;
+        SlotIndex = slotIndex;
     }
 }
 
@@ -231,11 +230,6 @@ public class CardEntry
     /// </summary>
     public CardController View { get; private set; }
 
-    /// <summary>
-    /// 場のスロット位置（0〜3など）
-    /// </summary>
-    public int SlotIndex { get; set; }
-
     // *******************************************************
     // コンストラクタ
     // *******************************************************
@@ -245,10 +239,11 @@ public class CardEntry
     /// </summary>
     /// <param name="data">カードのデータ</param>
     /// <param name="view">カード表示用コンポーネント</param>
-    public CardEntry(Card data, CardController view, int slotIndex)
+    public CardEntry(Card data, CardController view)//, CardProperty cardProperty, int slotIndex)
     {
         Data = data;
         View = view;
-        SlotIndex = slotIndex;
+        //CardProperty = cardProperty;
+        //SlotIndex = slotIndex;
     }
 }
