@@ -18,10 +18,10 @@ public class Define
     /// </summary>
     public enum CardProperty
     {
-        None = 0,
-        Deck,
-        Field,
-        Hand
+        None    =   0,  // なし 
+        Deck    =   1,  // 山札
+        Field   =   2,  // 場札
+        Hand    =   3   // 手札
     }
 
     /// <summary>
@@ -29,11 +29,11 @@ public class Define
     /// </summary>
     public enum SuitType
     {
-        Spade = 0,        // スペード
-        Club = 1,        // クラブ
-        Diamond = 2,        // ダイヤ
-        Heart = 3,        // ハート
-        Joker = 4         // ジョーカー
+        Spade   =   0,  // スペード
+        Club    =   1,  // クラブ
+        Diamond =   2,  // ダイヤ
+        Heart   =   3,  // ハート
+        Joker   =   4   // ジョーカー
     }
 
     /// <summary>
@@ -41,13 +41,13 @@ public class Define
     /// </summary>
     public enum SuitColorMode
     {
-        Both = 0,    // 両方使用
-        BlackOnly = 1,    // 黒のみ
-        RedOnly = 2,    // 赤のみ
-        SpadeOnly = 3,    // スペード
-        ClubOnly = 4,    // クラブ
-        DiamondOnly = 5,    // ダイヤ
-        HeartOnly = 6,    // ハート
+        Both        =   0,  // 両方使用
+        BlackOnly   =   1,  // 黒のみ
+        RedOnly     =   2,  // 赤のみ
+        SpadeOnly   =   3,  // スペード
+        ClubOnly    =   4,  // クラブ
+        DiamondOnly =   5,  // ダイヤ
+        HeartOnly   =   6,  // ハート
     }
 
     /// <summary>
@@ -55,9 +55,9 @@ public class Define
     /// </summary>
     public enum UseJoker
     {
-        None = 0,        // ジョーカーなし
-        One = 1,        // 1枚使用
-        Two = 2         // 2枚使用
+        None    =   0,  // ジョーカーなし
+        One     =   1,  // 1枚使用
+        Two     =   2   // 2枚使用
     }
 
     /// <summary>
@@ -65,24 +65,9 @@ public class Define
     /// </summary>
     public enum BackSpriteColor
     {
-        Red = 0,        // 赤
-        Blue = 1         // 青
+        Red     = 0,    // 赤
+        Blue    = 1     // 青
     }
-    
-    /// <summary>
-    /// タグ定義
-    /// </summary>
-    public const string TAG_DECK = "DeckCard";
-    public const string TAG_FIELD = "FieldCard";
-    public const string TAG_HAND = "HandCard";
-
-    /// <summary>
-    /// ソーティングレイヤー定義
-    /// </summary>
-    public const string SORT_LAYER_DECK = "Deck";
-    public const string SORT_LAYER_FIELD = "Field";
-    public const string SORT_LAYER_HAND = "Hand";
-    
 
     /// <summary>
     /// 表示位置
@@ -124,11 +109,11 @@ public static class SortLayers
     {
         return layer switch
         {
-            CardProperty.None => "None",
-            CardProperty.Deck => "Deck",
-            CardProperty.Field => "Field",
-            CardProperty.Hand => "Hand",
-            _ => "Default"
+            CardProperty.None   =>  "None",
+            CardProperty.Deck   =>  "Deck",
+            CardProperty.Field  =>  "Field",
+            CardProperty.Hand   =>  "Hand",
+            _                   =>  "Default"
         };
     }
 }
@@ -239,11 +224,9 @@ public class CardEntry
     /// </summary>
     /// <param name="data">カードのデータ</param>
     /// <param name="view">カード表示用コンポーネント</param>
-    public CardEntry(Card data, CardController view)//, CardProperty cardProperty, int slotIndex)
+    public CardEntry(Card data, CardController view)
     {
         Data = data;
         View = view;
-        //CardProperty = cardProperty;
-        //SlotIndex = slotIndex;
     }
 }

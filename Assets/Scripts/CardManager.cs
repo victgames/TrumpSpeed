@@ -53,6 +53,44 @@ public class CardManager : MonoBehaviour
     /// <param name="newEntries"></param>
     /// <param name="cardProperty"></param>
     /// <param name="position"></param>
+    /// <param name="slotIndex"></param>
+    public void DrawTopCard(List<CardEntry> oldEntries, List<CardEntry> newEntries, CardProperty cardProperty, Vector3 position, int slotIndex)
+    {
+        if (oldEntries.Count == 0) return;
+
+        // 山札から先頭のカードを取り出す
+        int lastIndex = oldEntries.Count - 1;
+        CardEntry entry = oldEntries[lastIndex];
+
+        // 表示位置を更新
+        entry.View.transform.position = position;
+
+        // 所属を更新
+        entry.Data.CardProperty = cardProperty;
+
+        // 場のスロット位置を更新（1～4）
+        entry.Data.SlotIndex = slotIndex;
+
+        // ソート情報を更新
+        entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardProperty), 0);
+
+        // 表裏を更新
+        entry.Data.IsFaceUp = true;
+        entry.View.GetComponent<CardController>()?.UpdateSprite();
+
+        // 山札リストから削除, 場札リストに追加
+        oldEntries.RemoveAt(lastIndex);
+        newEntries.Add(entry);
+    }
+
+    /*
+    /// <summary>
+    /// 山札から1枚引き, 場札または手札に加える
+    /// </summary>
+    /// <param name="oldEntries"></param>
+    /// <param name="newEntries"></param>
+    /// <param name="cardProperty"></param>
+    /// <param name="position"></param>
     public void DrawTopCard(List<CardEntry> oldEntries, List<CardEntry> newEntries, CardProperty cardProperty, IReadOnlyList<Vector3> position)
     {
         for (int i = 0; i < position.Count; i++)
@@ -83,6 +121,6 @@ public class CardManager : MonoBehaviour
             oldEntries.RemoveAt(lastIndex);
             newEntries.Add(entry);
         }
-    }
-    
+    }*/
+
 }

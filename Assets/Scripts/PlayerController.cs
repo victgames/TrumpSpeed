@@ -134,9 +134,13 @@ public class PlayerController : MonoBehaviour
             // Fieldカードに当たっていたらスナップ対象として記録
             if (targetCard != null && targetCard.Card.CardProperty == CardProperty.Field)
             {
-                _snapFlag = true; // スナップ対象あり
-                _targetCard = targetCard.gameObject; // スナップ先を記憶
-                break; // 最初に見つかった1枚でOKなので終了
+                // 数字の条件を SpeedRule で判定
+                if (SpeedRule.IsSequential(_selectedCard.GetComponent<CardController>()?.Card, targetCard.Card))
+                {
+                    _snapFlag = true; // スナップ対象あり
+                    _targetCard = targetCard.gameObject; // スナップ先を記憶
+                    break; // 最初に見つかった1枚でOK
+                }
             }
         }
 
@@ -172,19 +176,23 @@ public class PlayerController : MonoBehaviour
                 draggedCard.Card.CardProperty = CardProperty.Field;
 
                 var targetCard = _targetCard.GetComponent<CardController>();
-                int? slotIndex = 0;
-                int order = 0;
+                int newSlotIndex = 0;
+                int newOrder = 0;
                 if (targetCard != null)
                 {
-                    slotIndex = targetCard.Card.SlotIndex;
-                    order = targetCard.SpriteRenderer.sortingOrder;
+                    newSlotIndex = (int)targetCard.Card.SlotIndex;
+                    newOrder = targetCard.SpriteRenderer.sortingOrder;
                 }
 
+                int oldSlotIndex = (int)draggedCard.Card.SlotIndex;
+
                 // 場のスロット位置を targetCard と同じにする
-                draggedCard.Card.SlotIndex = slotIndex;
+                draggedCard.Card.SlotIndex = newSlotIndex;
 
                 // sortingLayerを targetCard と同じ, sortingOrderを targetCard + 1 に変更
-                draggedCard.SetSorting(SortLayers.Name(CardProperty.Field), order + 1);
+                draggedCard.SetSorting(SortLayers.Name(CardProperty.Field), newOrder + 1);
+
+                GameDirector.Instance.AddHandCard(oldSlotIndex);
             }
             else
             {

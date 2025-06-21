@@ -72,7 +72,7 @@ public class GameDirector : MonoBehaviour
     private void Start()
     {
         // カードリストを作成
-        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.SpadeOnly, UseJoker.One, BackSpriteColor.Red);
+        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.BlackOnly, UseJoker.One, BackSpriteColor.Red);
         _entriesDeckRed = _cardGenerator.InitializeEntries(cardList);
 
         // シャッフル後山札を表示
@@ -80,8 +80,15 @@ public class GameDirector : MonoBehaviour
         _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
 
         // 場札, 手札を引く
-        _cardManager.DrawTopCard(_entriesDeckRed, _entriesFieldRed, CardProperty.Field, Position.Field);
-        _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand);
+        for (int slotIndex = 0; slotIndex < Position.Field.Count; slotIndex++)
+        {
+            _cardManager.DrawTopCard(_entriesDeckRed, _entriesFieldRed, CardProperty.Field, Position.Field[slotIndex], slotIndex);
+        }
+        for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
+        {
+            _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+        }
+        
     }
 
 
@@ -89,4 +96,11 @@ public class GameDirector : MonoBehaviour
     // メソッド
     // *******************************************************
 
+    /// <summary>
+    /// 手札を1枚追加する
+    /// </summary>
+    public void AddHandCard(int slotIndex)
+    {
+        _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+    }
 }
