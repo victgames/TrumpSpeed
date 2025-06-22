@@ -1,9 +1,8 @@
 #nullable enable
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using static Define;
-using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class GameDirector : MonoBehaviour
@@ -38,6 +37,11 @@ public class GameDirector : MonoBehaviour
     /// 手札リスト（赤）
     /// </summary>
     private List<CardEntry> _entriesHandRed = new List<CardEntry>();
+
+    /// <summary>
+    /// 使用済みカードリスト（赤）
+    /// </summary>
+    private List<CardEntry> _entriesNoneRed = new List<CardEntry>();
 
 
     // *******************************************************
@@ -92,6 +96,11 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        int a = 0;
+    }
+
     /// <summary>
     /// 手札入れ替えボタンクリック時操作
     /// </summary>
@@ -132,5 +141,20 @@ public class GameDirector : MonoBehaviour
     public void AddHandCard(int slotIndex)
     {
         _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void AddUsedCard(GameObject Obj)
+    {
+        CardEntry? entry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == Obj);
+
+        _cardManager.UpdateEntry(entry, Position.None, false, CardProperty.None, 0, 0);
+        Obj.SetActive(false);
+        
+        _entriesFieldRed.Remove(entry);
+        _entriesNoneRed.Add(entry);
     }
 }

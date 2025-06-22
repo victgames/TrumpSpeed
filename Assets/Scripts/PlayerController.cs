@@ -174,6 +174,7 @@ public class PlayerController : MonoBehaviour
 
                 GameDirector.Instance.TransferCardEntry(_selectedCard, _targetCard);
                 GameDirector.Instance.AddHandCard(orderslotIndex);
+                GameDirector.Instance.AddUsedCard(_targetCard);
             }
             else
             {

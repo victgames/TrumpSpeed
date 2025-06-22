@@ -1,4 +1,4 @@
-#nullable enable
+ï»¿#nullable enable
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,11 +7,11 @@ using static Define;
 public class CardManager : MonoBehaviour
 {
     // *******************************************************
-    // ƒƒ\ƒbƒh
+    // ãƒ¡ã‚½ãƒƒãƒ‰
     // *******************************************************
 
     /// <summary>
-    /// RD‚ğ•\¦
+    /// å±±æœ­ã‚’è¡¨ç¤º
     /// </summary>
     /// <param name="entries"></param>
     public void DisplayDeck(List<CardEntry> entries, Vector3 basisPosition, Vector3 offset)
@@ -25,10 +25,10 @@ public class CardManager : MonoBehaviour
             UpdateEntry(entry, position, false, CardProperty.Deck, i, 0);
 
             /*
-            // ƒJ[ƒh‚ÌˆÊ’u‚ğ•ÏX‚µ‚ÄÄ•\¦
+            // ã‚«ãƒ¼ãƒ‰ã®ä½ç½®ã‚’å¤‰æ›´ã—ã¦å†è¡¨ç¤º
             entry.View.transform.position = pos + offset * i;
 
-            // ƒJ[ƒh‚Ì— •\‚ğXV
+            // ã‚«ãƒ¼ãƒ‰ã®è£è¡¨ã‚’æ›´æ–°
             entry.View.GetComponent<CardController>()?.SetSprite(false);
             entry.View.GetComponent<CardController>()?.SetCardProperty(CardProperty.Deck);
             entry.View.GetComponent<CardController>()?.SetSortingOrder(i);
@@ -38,21 +38,21 @@ public class CardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// RD‚ğƒVƒƒƒbƒtƒ‹
+    /// å±±æœ­ã‚’ã‚·ãƒ£ãƒƒãƒ•ãƒ«
     /// </summary>
     /// <param name="deck"></param>
     public void Shuffle(List<CardEntry> deck)
     {
-        // i”Ô–Ú‚Æ, iˆÈ~‚Ìƒ‰ƒ“ƒ_ƒ€‚É‘I‚Î‚ê‚½j”Ô–Ú‚ğ“ü‚ê‘Ö‚¦‚é
-        for (int i = 0; i < deck.Count; i++)
+        for (int i = deck.Count - 1; i > 0; i--)
         {
-            int j = Random.Range(i, deck.Count);
+            int j = Random.Range(0, i + 1); // jã¯0ã€œiã®ç¯„å›²
             (deck[i], deck[j]) = (deck[j], deck[i]);
         }
     }
 
+
     /// <summary>
-    /// RD‚©‚ç1–‡ˆø‚«, êD‚Ü‚½‚ÍèD‚É‰Á‚¦‚é
+    /// å±±æœ­ã‹ã‚‰1æšå¼•ã, å ´æœ­ã¾ãŸã¯æ‰‹æœ­ã«åŠ ãˆã‚‹
     /// </summary>
     /// <param name="oldEntries"></param>
     /// <param name="newEntries"></param>
@@ -63,46 +63,46 @@ public class CardManager : MonoBehaviour
     {
         if (oldEntries.Count == 0) return;
 
-        // RD‚©‚çæ“ª‚ÌƒJ[ƒh‚ğæ‚èo‚·
+        // å±±æœ­ã‹ã‚‰å…ˆé ­ã®ã‚«ãƒ¼ãƒ‰ã‚’å–ã‚Šå‡ºã™
         int lastIndex = oldEntries.Count - 1;
         CardEntry entry = oldEntries[lastIndex];
 
         UpdateEntry(entry, position, true, cardProperty, 0, slotIndex);
 
         /*
-        // •\¦ˆÊ’u‚ğXV
+        // è¡¨ç¤ºä½ç½®ã‚’æ›´æ–°
         entry.View.transform.position = position;
 
-        // Š‘®‚ğXV
+        // æ‰€å±ã‚’æ›´æ–°
         entry.Data.CardProperty = cardProperty;
 
-        // ê‚ÌƒXƒƒbƒgˆÊ’u‚ğXVi1`4j
+        // å ´ã®ã‚¹ãƒ­ãƒƒãƒˆä½ç½®ã‚’æ›´æ–°ï¼ˆ1ï½4ï¼‰
         entry.Data.SlotIndex = slotIndex;
 
-        // ƒ\[ƒgî•ñ‚ğXV
+        // ã‚½ãƒ¼ãƒˆæƒ…å ±ã‚’æ›´æ–°
         entry.View.GetComponent<CardController>()?.SetSorting(SortLayers.Name(cardProperty), 0);
 
-        // •\— ‚ğXV
+        // è¡¨è£ã‚’æ›´æ–°
         entry.Data.IsFaceUp = true;
         entry.View.GetComponent<CardController>()?.UpdateSprite();
         */
 
-        // RDƒŠƒXƒg‚©‚çíœ, êDƒŠƒXƒg‚É’Ç‰Á
+        // å±±æœ­ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤, å ´æœ­ãƒªã‚¹ãƒˆã«è¿½åŠ 
         oldEntries.RemoveAt(lastIndex);
         newEntries.Add(entry);
     }
 
     public void MergeCardEntries(List<CardEntry> fromEntries, List<CardEntry> toEntries)
     {
-        // 1. fromEntries‚Ì‘S—v‘f‚ğtoEntries‚ÉˆÚ“®iƒŠƒZƒbƒg‚Í‚Ü‚¾‚µ‚È‚¢j
-        for (int i = 0; i < fromEntries.Count; i++)
+        // fromEntriesã®è¦ç´ ã‚’ã™ã¹ã¦ç§»å‹•ã•ã›ã‚‹
+        for (int i = fromEntries.Count - 1; i >= 0; i--)
         {
             CardEntry entry = fromEntries[i];
             fromEntries.RemoveAt(i);
             toEntries.Add(entry);
         }
 
-        // 2. toEntries‚Ì‘S—v‘f‚É‘Î‚µ‚ÄƒŠƒZƒbƒgˆ—‚ğÀs
+        // 2. toEntriesã®å…¨è¦ç´ ã«å¯¾ã—ã¦ãƒªã‚»ãƒƒãƒˆå‡¦ç†ã‚’å®Ÿè¡Œ
         for (int i = 0; i < toEntries.Count; i++)
         {
             CardEntry entry = toEntries[i];
@@ -122,10 +122,10 @@ public class CardManager : MonoBehaviour
 
     public void UpdateEntry(CardEntry entry, Vector3 position, bool isFaceUp, CardProperty cardProperty, int order, int slotIndex)
     {
-        // ƒJ[ƒh‚ÌˆÊ’u‚ğ•ÏX‚µ‚ÄÄ•\¦
+        // ã‚«ãƒ¼ãƒ‰ã®ä½ç½®ã‚’å¤‰æ›´ã—ã¦å†è¡¨ç¤º
         entry.View.transform.position = position;
 
-        // ƒJ[ƒh‚Ì— •\‚ğXV
+        // ã‚«ãƒ¼ãƒ‰ã®è£è¡¨ã‚’æ›´æ–°
         entry.View.GetComponent<CardController>()?.SetSprite(isFaceUp);
         entry.View.GetComponent<CardController>()?.SetCardProperty(cardProperty);
         entry.View.GetComponent<CardController>()?.SetSortingOrder(order);
