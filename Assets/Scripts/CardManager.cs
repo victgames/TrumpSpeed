@@ -120,7 +120,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    private void UpdateEntry(CardEntry entry, Vector3 position, bool isFaceUp, CardProperty cardProperty, int order, int slotIndex)
+    public void UpdateEntry(CardEntry entry, Vector3 position, bool isFaceUp, CardProperty cardProperty, int order, int slotIndex)
     {
         // カードの位置を変更して再表示
         entry.View.transform.position = position;

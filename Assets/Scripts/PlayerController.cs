@@ -167,35 +167,13 @@ public class PlayerController : MonoBehaviour
         if (_selectedCard != null)
         {
             var draggedCard = _selectedCard.GetComponent<CardController>();
-            var sr = _selectedCard.GetComponent<SpriteRenderer>();
 
             if (_snapFlag && _targetCard != null)
             {
-                // ドロップ成功
+                int orderslotIndex = draggedCard.Card.SlotIndex;
 
-                // カードの状態を targetCard と同じにする
-                draggedCard.Card.CardProperty = CardProperty.Field;
-
-                var targetCard = _targetCard.GetComponent<CardController>();
-                int newSlotIndex = 0;
-                int newOrder = 0;
-                if (targetCard != null)
-                {
-                    newSlotIndex = (int)targetCard.Card.SlotIndex;
-                    newOrder = targetCard.SpriteRenderer.sortingOrder;
-                }
-
-                int oldSlotIndex = (int)draggedCard.Card.SlotIndex;
-
-                // 場のスロット位置を targetCard と同じにする
-                draggedCard.Card.SlotIndex = newSlotIndex;
-
-                // sortingLayerを targetCard と同じ, sortingOrderを targetCard + 1 に変更
-                draggedCard.SetCardProperty(CardProperty.Field);
-                draggedCard.SetSortingOrder(newOrder + 1);
-
-                GameDirector.Instance.TransferCardEntry(_selectedCard);
-                GameDirector.Instance.AddHandCard(oldSlotIndex);
+                GameDirector.Instance.TransferCardEntry(_selectedCard, _targetCard);
+                GameDirector.Instance.AddHandCard(orderslotIndex);
             }
             else
             {

@@ -115,12 +115,15 @@ public class GameDirector : MonoBehaviour
     // ƒƒ\ƒbƒh
     // *******************************************************
 
-    public void TransferCardEntry(GameObject targetObj)
+    public void TransferCardEntry(GameObject selectedObj, GameObject targetObj)
     {
-        CardEntry? matchedEntry = _entriesHandRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == targetObj);
+        CardEntry? selectedEntry = _entriesHandRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == selectedObj);
+        CardEntry? targetEntry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == targetObj);
 
-        _entriesHandRed.Remove(matchedEntry);
-        _entriesFieldRed.Add(matchedEntry);
+        _cardManager.UpdateEntry(selectedEntry, targetEntry.View.transform.position, true, CardProperty.Field, targetEntry.View.SpriteRenderer.sortingOrder + 1, targetEntry.Data.SlotIndex);
+
+        _entriesHandRed.Remove(selectedEntry);
+        _entriesFieldRed.Add(selectedEntry);
     }
 
     /// <summary>
@@ -128,7 +131,6 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void AddHandCard(int slotIndex)
     {
-
         _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
     }
 }
