@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using static Define;
-using static Define.Card;
 
 public class CardController : MonoBehaviour
 {
@@ -9,82 +8,78 @@ public class CardController : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// スプライト描画用コンポーネント
-    /// </summary>
-    private SpriteRenderer _spriteRenderer;
-
-
-    // *******************************************************
-    // プロパティ
-    // *******************************************************
-
-    /// <summary>
-    /// カード情報を丸ごと保持
+    /// カード定義
     /// </summary>
     public Card Card { get; private set; }
 
+    /// <summary>
+    /// スプライトレンダリング用コンポーネント
+    /// </summary>
+    public SpriteRenderer SpriteRenderer { get; private set; }
+
+    // *******************************************************
+    // 基本メソッド
+    // *******************************************************
+
+    /// <summary>
+    /// ゲーム開始前の初期化処理
+    /// </summary>
+    private void Awake()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
     // *******************************************************
     // メソッド
     // *******************************************************
 
-    /// <summary>
-    /// 初期化
-    /// </summary>
-    private void Awake()
-    {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="card"></param>
-    /// <param name="faceSprites"></param>
-    /// <param name="backSprites"></param>
-    public void SetCard(Card card, Sprite[] faceSprites, Sprite[] backSprites)
+    public void SetCard(Card card)
     {
         Card = card;
-
-        if (Card.IsFaceUp)
-        {
-            int index = GetSpriteIndex(Card.Suit, Card.Number, faceSprites.Length);
-            if (index >= 0 && index < faceSprites.Length)
-            {
-                _spriteRenderer.sprite = faceSprites[index];
-            }
-            else
-            {
-                Debug.LogWarning($"無効なスプライトインデックス: {index}");
-            }
-        }
-        else
-        {
-            int backIndex = (int)Card.BackColor;
-            if (backIndex >= 0 && backIndex < backSprites.Length)
-            {
-                _spriteRenderer.sprite = backSprites[backIndex];
-            }
-            else
-            {
-                Debug.LogWarning($"無効な裏面スプライトインデックス: {backIndex}");
-            }
-        }
     }
 
     /// <summary>
-    /// 
+    /// カード裏表（isFaceUp）に合わせてスプライト（sprite）を更新
     /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    /// <param name="length"></param>
-    /// <returns></returns>
-    private int GetSpriteIndex(SuitType suit, int number, int length)
+    public void SetSprite(bool isFaceUp)
     {
-        if (suit == SuitType.Joker)
-        {
-            return length - 1;
-        }
-        return ((int)suit) * 13 + (number - 1);
+        if (Card == null || SpriteRenderer == null) return;
+
+        Card.IsFaceUp = isFaceUp;
+        SpriteRenderer.sprite = Card.IsFaceUp ? Card.FaceSprite : Card.BackSprite;
+    }
+
+    /// <summary>
+    /// カードの所属（cardProperty）, レンダラー順序（sortingLayer）を更新
+    /// </summary>
+    /// <param name="cardProperty"></param>
+    public void SetCardProperty(CardProperty cardProperty)
+    {
+        if (Card == null || SpriteRenderer == null) return;
+
+        Card.CardProperty = cardProperty;
+        SpriteRenderer.sortingLayerName = SortLayers.Name(cardProperty);
+    }
+
+    /// <summary>
+    /// レンダラーオーダー順（sortingOrder）を更新
+    /// </summary>
+    /// <param name="order"></param>
+    public void SetSortingOrder(int order)
+    {
+        if (SpriteRenderer == null) return;
+
+        SpriteRenderer.sortingOrder = order;
+    }
+
+    /// <summary>
+    /// slotIndexを更新
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void SetSlotIndex(int slotIndex)
+    {
+        if (Card == null) return;
+
+        Card.SlotIndex = slotIndex;
     }
 }

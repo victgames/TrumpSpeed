@@ -1,8 +1,11 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-using static Define.Card;
+using static UnityEngine.EventSystems.EventTrigger;
+
+
 
 public class CardGenerator : MonoBehaviour
 {
@@ -34,71 +37,130 @@ public class CardGenerator : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// デッキからカードを1枚引いて生成（表/裏共通）
+    /// カードリスト作成
     /// </summary>
-    public void GenerateCard(List<Card> deck, Vector2 spawnPosition, bool isFaceUp, BackSpriteColor backColor)
-    {
-        if (deck.Count == 0)
-        {
-            Debug.LogWarning("デッキが空です");
-            return;
-        }
-
-        Card drawCard = deck[0];
-        deck.RemoveAt(0);
-
-        // 新しいカード情報として状態を更新したCardを再生成
-        Card updatedCard = new Card(
-            drawCard.Suit,
-            drawCard.Number,
-            isFaceUp,
-            spawnPosition,
-            backColor
-        );
-
-        GameObject cardObj = Instantiate(_cardPrefab, spawnPosition, Quaternion.identity);
-        CardController controller = cardObj.GetComponent<CardController>();
-        controller.SetCard(updatedCard, _faceSprites, _backSprites);
-    }
-
-    /// <summary>
-    /// デッキ生成
-    /// </summary>
-    public List<Card> CreateDeck(SuitColorMode colorMode, UseJoker includeJoker)
+    /// <param name="colorMode"></param>
+    /// <param name="includeJoker"></param>
+    /// <returns></returns>
+    public List<Card> InitializeCardList(SuitColorMode colorMode, UseJoker includeJoker, BackSpriteColor backColor)
     {
         List<Card> deck = new List<Card>();
 
+        // SuitTypeすべての値を順に列挙してsuitに代入
         foreach (SuitType suit in Enum.GetValues(typeof(SuitType)))
         {
+            // Jokerを除外
             if (suit == SuitType.Joker) continue;
 
+            // SuitColorModeに併せてカードリストに含めないカードを除外
             if (colorMode == SuitColorMode.BlackOnly && (suit != SuitType.Spade && suit != SuitType.Club)) continue;
             if (colorMode == SuitColorMode.RedOnly && (suit != SuitType.Heart && suit != SuitType.Diamond)) continue;
+            if (colorMode == SuitColorMode.SpadeOnly && (suit != SuitType.Spade)) continue;
+            if (colorMode == SuitColorMode.ClubOnly && (suit != SuitType.Club)) continue;
+            if (colorMode == SuitColorMode.DiamondOnly && (suit != SuitType.Diamond)) continue;
+            if (colorMode == SuitColorMode.HeartOnly && (suit != SuitType.Heart)) continue;
 
+            // 1～13までの数字で初期化
             for (int num = 1; num <= 13; num++)
             {
-                deck.Add(new Card(suit, num, false, Vector2.zero, BackSpriteColor.Red));
+                Sprite? faceSprite = GetFaceSprite(suit, num);
+                Sprite? backSprite = GetBackSprite(backColor);
+                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, CardProperty.None, 0));
             }
         }
 
-        // Joker の追加（0とする）
+        // Jokerの枚数初期化
         for (int i = 0; i < (int)includeJoker; i++)
         {
-            deck.Add(new Card(SuitType.Joker, 0, false, Vector2.zero, BackSpriteColor.Red));
+            // Jokerは_faceSpritesの53番目以降に配置
+            Sprite? faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
+            Sprite? backSprite = GetBackSprite(backColor);
+            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, CardProperty.None, -1));
         }
 
         return deck;
     }
 
     /// <summary>
-    /// デッキをシャッフルする（Fisher-Yatesアルゴリズム）
+    /// カード情報リスト作成
     /// </summary>
-    public void Shuffle<T>(List<T> list)
+    public List<CardEntry> InitializeEntries(List<Card> cardDataList)
     {
-        for (int i = 0; i < list.Count; i++)
+        // カード情報リストを初期化
+        List<CardEntry> entries = new List<CardEntry>();
+
+        for (int i = 0; i < cardDataList.Count; i++)
         {
-            int j = UnityEngine.Random.Range(i, list.Count);
-            (list[i], list[j]) = (list[j], list[i]);
+            // カードを生成
+            GameObject? cardObj = GenerateCard(cardDataList[i]);
+
+            // カード情報リストに格納
+            if (cardObj != null)
+            {
+                CardController controller = cardObj.GetComponent<CardController>();
+                if (controller != null)
+                {
+                    // 所属:None, インデックス:0として初期化
+                    CardEntry entry = new CardEntry(cardDataList[i], controller);
+                    entries.Add(entry);
+                }
+            }
         }
+        return entries;
+    }
+
+    /// <summary>
+    /// カードを生成
+    /// </summary>
+    /// <returns></returns>
+    public GameObject? GenerateCard(Card cardData)
+    {
+        if (cardData == null)
+        {
+            return null;
+        }
+
+        // カードインスタンス作成
+        GameObject cardObj = Instantiate(_cardPrefab, Position.None, Quaternion.identity);
+
+        cardObj.GetComponent<CardController>()?.SetCard(cardData);
+        cardObj.GetComponent<CardController>()?.SetSprite(false);
+        cardObj.GetComponent<CardController>()?.SetSortingOrder(-1);
+
+        return cardObj;
+    }
+
+    /// <summary>
+    /// 表面スプライトを探索
+    /// </summary>
+    /// <param name="suit"></param>
+    /// <param name="number"></param>
+    /// <returns></returns>
+    private Sprite? GetFaceSprite(SuitType suit, int number)
+    {
+        // ジョーカーの場合は入力値のスプライトを取得
+        if (suit == SuitType.Joker)
+        {
+            return _faceSprites[number];
+        }
+
+        // 数字の場合はsuitと数字で合致するスプライトを探索
+        int index = ((int)suit) * 13 + (number - 1);
+        if (index >= 0 && index < _faceSprites.Length)
+        {
+            return _faceSprites[index];
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 裏面スプライトを探索
+    /// </summary>
+    /// <param name="backColor"></param>
+    /// <returns></returns>
+    private Sprite? GetBackSprite(BackSpriteColor backColor)
+    {
+        return _backSprites[(int)backColor];
     }
 }
