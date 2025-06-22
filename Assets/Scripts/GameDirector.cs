@@ -1,5 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine;
 using static Define;
@@ -140,6 +141,11 @@ public class GameDirector : MonoBehaviour
     public void AddHandCard(int slotIndex)
     {
         _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+
+        if (_entriesDeckRed.Count == 0 && _entriesHandRed.Count == 0)
+        {
+            SceneManager.LoadScene("ClearScene"); // ÉVÅ[ÉìñºÇ≈ëJà⁄
+        }
     }
 
     /// <summary>
