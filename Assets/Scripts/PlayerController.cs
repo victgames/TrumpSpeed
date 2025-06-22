@@ -194,6 +194,7 @@ public class PlayerController : MonoBehaviour
                 draggedCard.SetCardProperty(CardProperty.Field);
                 draggedCard.SetSortingOrder(newOrder + 1);
 
+                GameDirector.Instance.TransferCardEntry(_selectedCard);
                 GameDirector.Instance.AddHandCard(oldSlotIndex);
             }
             else

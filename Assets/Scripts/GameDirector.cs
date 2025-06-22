@@ -1,7 +1,9 @@
 #nullable enable
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using static Define;
+using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class GameDirector : MonoBehaviour
@@ -113,11 +115,20 @@ public class GameDirector : MonoBehaviour
     // ƒƒ\ƒbƒh
     // *******************************************************
 
+    public void TransferCardEntry(GameObject targetObj)
+    {
+        CardEntry? matchedEntry = _entriesHandRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == targetObj);
+
+        _entriesHandRed.Remove(matchedEntry);
+        _entriesFieldRed.Add(matchedEntry);
+    }
+
     /// <summary>
     /// ŽèŽD‚ð1–‡’Ç‰Á‚·‚é
     /// </summary>
     public void AddHandCard(int slotIndex)
     {
+
         _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
     }
 }
