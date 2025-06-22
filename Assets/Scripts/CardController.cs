@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using static Define;
 
 public class CardController : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// カード定義
     /// </summary>
-    public Card Card { get; set; }
+    public Card Card { get; private set; }
 
     /// <summary>
     /// スプライトレンダリング用コンポーネント
@@ -33,24 +33,53 @@ public class CardController : MonoBehaviour
     // メソッド
     // *******************************************************
 
+    public void SetCard(Card card)
+    {
+        Card = card;
+    }
+
     /// <summary>
-    /// sortingを変更
+    /// カード裏表（isFaceUp）に合わせてスプライト（sprite）を更新
     /// </summary>
-    /// <param name="layerName"></param>
+    public void SetSprite(bool isFaceUp)
+    {
+        if (Card == null || SpriteRenderer == null) return;
+
+        Card.IsFaceUp = isFaceUp;
+        SpriteRenderer.sprite = Card.IsFaceUp ? Card.FaceSprite : Card.BackSprite;
+    }
+
+    /// <summary>
+    /// カードの所属（cardProperty）, レンダラー順序（sortingLayer）を更新
+    /// </summary>
+    /// <param name="cardProperty"></param>
+    public void SetCardProperty(CardProperty cardProperty)
+    {
+        if (Card == null || SpriteRenderer == null) return;
+
+        Card.CardProperty = cardProperty;
+        SpriteRenderer.sortingLayerName = SortLayers.Name(cardProperty);
+    }
+
+    /// <summary>
+    /// レンダラーオーダー順（sortingOrder）を更新
+    /// </summary>
     /// <param name="order"></param>
-    public void SetSorting(string layerName, int order)
+    public void SetSortingOrder(int order)
     {
         if (SpriteRenderer == null) return;
-        SpriteRenderer.sortingLayerName = layerName;
+
         SpriteRenderer.sortingOrder = order;
     }
 
     /// <summary>
-    /// カード裏表に合わせてスプライト変更
+    /// slotIndexを更新
     /// </summary>
-    public void UpdateSprite()
+    /// <param name="slotIndex"></param>
+    public void SetSlotIndex(int slotIndex)
     {
-        if (Card == null || SpriteRenderer == null) return;
-        SpriteRenderer.sprite = Card.IsFaceUp ? Card.FaceSprite : Card.BackSprite;
+        if (Card == null) return;
+
+        Card.SlotIndex = slotIndex;
     }
 }

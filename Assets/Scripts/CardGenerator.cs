@@ -5,6 +5,8 @@ using UnityEngine;
 using static Define;
 using static UnityEngine.EventSystems.EventTrigger;
 
+
+
 public class CardGenerator : MonoBehaviour
 {
     // *******************************************************
@@ -63,7 +65,7 @@ public class CardGenerator : MonoBehaviour
             {
                 Sprite? faceSprite = GetFaceSprite(suit, num);
                 Sprite? backSprite = GetBackSprite(backColor);
-                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, CardProperty.None, null));
+                deck.Add(new Card(suit, num, backColor, faceSprite, backSprite, false, CardProperty.None, 0));
             }
         }
 
@@ -73,7 +75,7 @@ public class CardGenerator : MonoBehaviour
             // Jokerは_faceSpritesの53番目以降に配置
             Sprite? faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
             Sprite? backSprite = GetBackSprite(backColor);
-            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, CardProperty.None, null));
+            deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, CardProperty.None, -1));
         }
 
         return deck;
@@ -82,10 +84,10 @@ public class CardGenerator : MonoBehaviour
     /// <summary>
     /// カード情報リスト作成
     /// </summary>
-    public List<CardEntry?> InitializeEntries(List<Card> cardDataList)
+    public List<CardEntry> InitializeEntries(List<Card> cardDataList)
     {
         // カード情報リストを初期化
-        List<CardEntry?> entries = new List<CardEntry?>();
+        List<CardEntry> entries = new List<CardEntry>();
 
         for (int i = 0; i < cardDataList.Count; i++)
         {
@@ -99,7 +101,7 @@ public class CardGenerator : MonoBehaviour
                 if (controller != null)
                 {
                     // 所属:None, インデックス:0として初期化
-                    CardEntry entry = new CardEntry(cardDataList[i], controller);//, CardProperty.None, 0);
+                    CardEntry entry = new CardEntry(cardDataList[i], controller);
                     entries.Add(entry);
                 }
             }
@@ -110,8 +112,6 @@ public class CardGenerator : MonoBehaviour
     /// <summary>
     /// カードを生成
     /// </summary>
-    /// <param name="cardData"></param>
-    /// <param name="position"></param>
     /// <returns></returns>
     public GameObject? GenerateCard(Card cardData)
     {
@@ -121,16 +121,11 @@ public class CardGenerator : MonoBehaviour
         }
 
         // カードインスタンス作成
-        GameObject cardObj = Instantiate(_cardPrefab, Vector3.zero, Quaternion.identity);
+        GameObject cardObj = Instantiate(_cardPrefab, Position.None, Quaternion.identity);
 
-        // インスタンスの情報を更新
-        var cardCtrl = cardObj.GetComponent<CardController>();
-        if (cardCtrl != null)
-        {
-            cardCtrl.Card = cardData;
-        }
-        cardObj.GetComponent<CardController>()?.UpdateSprite();
-        cardObj.GetComponent<CardController>()?.SetSorting(SortLayers.Name(CardProperty.None), 0);
+        cardObj.GetComponent<CardController>()?.SetCard(cardData);
+        cardObj.GetComponent<CardController>()?.SetSprite(false);
+        cardObj.GetComponent<CardController>()?.SetSortingOrder(-1);
 
         return cardObj;
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 using static Define;
 
 public class PlayerController : MonoBehaviour
@@ -98,7 +99,7 @@ public class PlayerController : MonoBehaviour
         _selectedCard.GetComponent<SpriteRenderer>().color = Color.green;
 
         // sortingOrderを一時的に 固定値1 にする
-        _selectedCard.GetComponent<CardController>()?.SetSorting(SortLayers.Name(CardProperty.Hand), 1);
+        _selectedCard.GetComponent<CardController>()?.SetSortingOrder(1);
     }
 
     /// <summary>
@@ -190,7 +191,8 @@ public class PlayerController : MonoBehaviour
                 draggedCard.Card.SlotIndex = newSlotIndex;
 
                 // sortingLayerを targetCard と同じ, sortingOrderを targetCard + 1 に変更
-                draggedCard.SetSorting(SortLayers.Name(CardProperty.Field), newOrder + 1);
+                draggedCard.SetCardProperty(CardProperty.Field);
+                draggedCard.SetSortingOrder(newOrder + 1);
 
                 GameDirector.Instance.AddHandCard(oldSlotIndex);
             }
@@ -200,7 +202,7 @@ public class PlayerController : MonoBehaviour
                 _selectedCard.transform.position = _originalPosition;
 
                 // sortingOrderを 0 に変更
-                draggedCard.SetSorting(SortLayers.Name(CardProperty.Hand), 0);
+                draggedCard.SetSortingOrder(0);
             }
 
             // 選択色を元に戻す

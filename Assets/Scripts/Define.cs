@@ -74,6 +74,8 @@ public class Define
     /// </summary>
     public class Position
     {
+        public static readonly Vector3 None = Vector3.zero;
+
         /// <summary>山札の基準位置</summary>
         public static readonly Vector3 Deck = new Vector3(7.0f, -2.0f, 0.0f);
 
@@ -166,7 +168,7 @@ public class Card
     /// <summary>
     /// 場のスロット位置（0〜3など）
     /// </summary>
-    public int? SlotIndex { get; set; }
+    public int SlotIndex { get; set; }
 
     // *******************************************************
     // コンストラクタ
@@ -183,7 +185,7 @@ public class Card
     /// <param name="isFaceUp"></param>
     /// <param name="cardProperty"></param>
     /// <param name="slotIndex"></param>
-    public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite? faceSprite, Sprite? backSprite, bool isFaceUp, CardProperty cardProperty, int? slotIndex)
+    public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite? faceSprite, Sprite? backSprite, bool isFaceUp, CardProperty cardProperty, int slotIndex)
     {
         Suit = suit;
         Number = number;

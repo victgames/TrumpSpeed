@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-using System.Linq;  // LINQを使うために必要
+
 
 public class GameDirector : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class GameDirector : MonoBehaviour
     /// <summary>
     /// カードを生成するコンポーネント
     /// </summary>
-    [SerializeField] 
+    [SerializeField]
     private CardGenerator _cardGenerator;
 
     /// <summary>
@@ -25,17 +25,17 @@ public class GameDirector : MonoBehaviour
     /// <summary>
     /// 山札リスト（赤）
     /// </summary>
-    private List<CardEntry?> _entriesDeckRed = new List<CardEntry?>();
+    private List<CardEntry> _entriesDeckRed = new List<CardEntry>();
 
     /// <summary>
     /// 場札リスト（赤）
     /// </summary>
-    private List<CardEntry?> _entriesFieldRed = new List<CardEntry?>();
+    private List<CardEntry> _entriesFieldRed = new List<CardEntry>();
 
     /// <summary>
     /// 手札リスト（赤）
     /// </summary>
-    private List<CardEntry?> _entriesHandRed = new List<CardEntry?>();
+    private List<CardEntry> _entriesHandRed = new List<CardEntry>();
 
 
     // *******************************************************
@@ -72,7 +72,7 @@ public class GameDirector : MonoBehaviour
     private void Start()
     {
         // カードリストを作成
-        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.BlackOnly, UseJoker.One, BackSpriteColor.Red);
+        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.SpadeOnly, UseJoker.One, BackSpriteColor.Red);
         _entriesDeckRed = _cardGenerator.InitializeEntries(cardList);
 
         // シャッフル後山札を表示
@@ -88,9 +88,26 @@ public class GameDirector : MonoBehaviour
         {
             _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
         }
-        
     }
 
+    /// <summary>
+    /// 手札入れ替えボタンクリック時操作
+    /// </summary>
+    public void OnButtonClick()
+    {
+        // カードリストを作成
+        _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+
+        // シャッフル後山札を表示
+        _cardManager.Shuffle(_entriesDeckRed);
+        _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
+
+        // 手札を引く
+        for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
+        {
+            _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+        }
+    }
 
     // *******************************************************
     // メソッド
