@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 1052311525}
   - component: {fileID: 1052311524}
   m_Layer: 5
-  m_Name: Redistribution
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,7 +864,7 @@ GameObject:
   - component: {fileID: 1849492065}
   - component: {fileID: 1849492064}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Redistribution
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1015,6 +1015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardGenerator: {fileID: 1601098629}
   _cardManager: {fileID: 1111836399}
+  _redistributionButton: {fileID: 1849492062}
 --- !u!4 &2092881923
 Transform:
   m_ObjectHideFlags: 0

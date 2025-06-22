@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class SpeedRule : MonoBehaviour
@@ -15,5 +17,30 @@ public class SpeedRule : MonoBehaviour
         int b = fieldCard.Number;
 
         return (Mathf.Abs(a - b) == 1) || (a == 1 && b == 13) || (a == 13 && b == 1) || (a == 0 || b == 0);
+    }
+
+    /// <summary>
+    /// 任意の2枚が連続しているかを探索
+    /// </summary>
+    /// <param name="firstEntries"></param>
+    /// <param name="secondEntries"></param>
+    /// <returns></returns>
+    public static bool JudgeSequential(List<CardEntry> firstEntries, List<CardEntry> secondEntries)
+    {
+        bool judge = false;
+        // すべての組み合わせを探索
+        for (int i = 0; i < firstEntries.Count; i++)
+        {
+            for (int j = 0; j < secondEntries.Count; j++)
+            {
+                // 1つでも重ねる処理が可能な組み合わせがあればtrue
+                judge = IsSequential(firstEntries[i].Data, secondEntries[j].Data);
+                if (judge)
+                {
+                    return judge;
+                }
+            }
+        }
+        return judge;
     }
 }

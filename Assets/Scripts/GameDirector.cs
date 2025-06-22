@@ -25,6 +25,12 @@ public class GameDirector : MonoBehaviour
     private CardManager _cardManager;
 
     /// <summary>
+    /// 山札の引き直しをするボタン用コンポーネント
+    /// </summary>
+    [SerializeField]
+    private GameObject _redistributionButton;
+
+    /// <summary>
     /// 山札リスト（赤）
     /// </summary>
     private List<CardEntry> _entriesDeckRed = new List<CardEntry>();
@@ -50,7 +56,7 @@ public class GameDirector : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// 
+    /// インスタンス
     /// </summary>
     public static GameDirector Instance { get; private set; }
 
@@ -64,6 +70,8 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        _redistributionButton.SetActive(false);
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject); // 複数生成されていたら削除
@@ -95,10 +103,8 @@ public class GameDirector : MonoBehaviour
         {
             _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
         }
-    }
 
-    private void Update()
-    {
+        //MargeManager();
     }
 
     /// <summary>
@@ -106,18 +112,10 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void OnButtonClick()
     {
-        // カードリストを作成
-        _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+        // 手札入れ替えボタンを非表示にする
+        _redistributionButton.SetActive(false);
 
-        // シャッフル後山札を表示
-        _cardManager.Shuffle(_entriesDeckRed);
-        _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
-
-        // 手札を引く
-        for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
-        {
-            _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
-        }
+        //MargeManager();
     }
 
     // *******************************************************
@@ -149,10 +147,10 @@ public class GameDirector : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Noneを1枚追加する
     /// </summary>
     /// <param name="slotIndex"></param>
-    public void AddUsedCard(GameObject Obj)
+    public void AddNoneCard(GameObject Obj)
     {
         CardEntry? entry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == Obj);
 
@@ -161,5 +159,48 @@ public class GameDirector : MonoBehaviour
         
         _entriesFieldRed.Remove(entry);
         _entriesNoneRed.Add(entry);
+
+        JudgeGameOver();
+
     }
+
+
+    private void JudgeGameOver()
+    {
+        bool judgeDeck = SpeedRule.JudgeSequential(_entriesFieldRed, _entriesDeckRed);
+        bool judgeHand = SpeedRule.JudgeSequential(_entriesFieldRed, _entriesHandRed);
+
+        if (judgeDeck == false && judgeHand == false)
+        {
+            // これ以上は重ねられないためGameOver
+            SceneManager.LoadScene("GameOverScene"); // シーン名で遷移
+        }
+
+        if (judgeHand == false)
+        {
+            _redistributionButton.SetActive(true);
+        }
+    }
+    private void MargeManager()
+    {
+        bool judgeHand = false;
+        do
+        {
+            // 山札と手札を混ぜる
+            _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+
+            // シャッフル後山札を表示
+            _cardManager.Shuffle(_entriesDeckRed);
+            _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
+
+            // 手札を引く
+            for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
+            {
+                _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+            }
+            judgeHand = SpeedRule.JudgeSequential(_entriesFieldRed, _entriesHandRed);
+        }
+        while (judgeHand == true);
+    }
+    
 }
