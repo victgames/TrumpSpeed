@@ -98,7 +98,6 @@ public class GameDirector : MonoBehaviour
 
     private void Update()
     {
-        int a = 0;
     }
 
     /// <summary>
