@@ -28,7 +28,7 @@ public class StartDirector : MonoBehaviour
     private void Awake()
     {
         // 難易度「ふつう」を初期に設定
-        _difficulty.value = 2;
+        _difficulty.value = 1;
     }
 
     /// <summary>
@@ -40,20 +40,20 @@ public class StartDirector : MonoBehaviour
 
         switch (difficulty)
         {
-            case 0:     // おに
-                GameSettings.SetGameSettings(SuitColorMode.All, UseJoker.None, BackSpriteColor.Red);
-                break;
-
-            case 1:     // むずかしい
-                GameSettings.SetGameSettings(SuitColorMode.All, UseJoker.Two, BackSpriteColor.Red);
-                break;
-
-            case 2:     // ふつう
-                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.Two, BackSpriteColor.Red);
-                break;
-
-            case 3:     // やさしい
+            case 0:     // やさしい
                 GameSettings.SetGameSettings(SuitColorMode.SpadeOnly, UseJoker.One, BackSpriteColor.Red);
+                break;
+
+            case 1:     // ふつう
+                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.One, BackSpriteColor.Red);
+                break;
+
+            case 2:     // むずかしい
+                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.None, BackSpriteColor.Red);
+                break;
+
+            case 3:     // おに
+                GameSettings.SetGameSettings(SuitColorMode.All, UseJoker.None, BackSpriteColor.Red);
                 break;
 
             default:    // エラーを防ぐため代入

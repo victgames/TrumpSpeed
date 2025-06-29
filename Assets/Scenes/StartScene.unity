@@ -387,7 +387,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u304A\u306B\u3000\u3000\u3000\uFF08\u2660\u2663\u2666\u2665 JOKER : 0)"
+  m_text: "\u3084\u3055\u3057\u3044\u3000\uFF08\u2660    JOKER : 1)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 56c5316231d373541bbb0f075f7fad9a, type: 2}
   m_sharedMaterial: {fileID: 3777761816333592672, guid: 56c5316231d373541bbb0f075f7fad9a, type: 2}
@@ -1783,18 +1783,17 @@ MonoBehaviour:
   m_MultiSelect: 0
   m_Options:
     m_Options:
+    - m_Text: "\u3084\u3055\u3057\u3044\u3000\uFF08\u2660    JOKER : 1)"
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: "\u3075\u3064\u3046\u3000\u3000\uFF08\u2660\u2663   JOKER : 1)"
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: "\u3080\u305A\u304B\u3057\u3044\uFF08\u2660\u2663   JOKER : 0)"
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: "\u304A\u306B\u3000\u3000\u3000\uFF08\u2660\u2663\u2666\u2665 JOKER
         : 0)"
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: "\u3080\u305A\u304B\u3057\u3044\uFF08\u2660\u2663\u2666\u2665 JOKER
-        : 2)"
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: "\u3075\u3064\u3046\u3000\u3000\uFF08\u2660\u2663   JOKER : 2)"
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: "\u3084\u3055\u3057\u3044\u3000\uFF08\u2660    JOKER : 1)"
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
