@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using static Define;
 
+/// <summary>
+/// カードオブジェクトで処理するクラス
+/// </summary>
 public class CardController : MonoBehaviour
 {
     // *******************************************************
@@ -33,6 +36,10 @@ public class CardController : MonoBehaviour
     // メソッド
     // *******************************************************
 
+    /// <summary>
+    /// カード定義
+    /// </summary>
+    /// <param name="card"></param>
     public void SetCard(Card card)
     {
         Card = card;

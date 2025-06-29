@@ -1,11 +1,10 @@
 ﻿#nullable enable
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using static Define;
 
 /// <summary>
-/// 定義用クラス
+/// パラメータ定義用クラス
 /// </summary>
 public class Define
 {
@@ -18,10 +17,10 @@ public class Define
     /// </summary>
     public enum CardProperty
     {
-        None    =   0,  // なし 
-        Deck    =   1,  // 山札
-        Field   =   2,  // 場札
-        Hand    =   3   // 手札
+        None = 0,  // なし 
+        Deck = 1,  // 山札
+        Field = 2,  // 場札
+        Hand = 3   // 手札
     }
 
     /// <summary>
@@ -29,11 +28,11 @@ public class Define
     /// </summary>
     public enum SuitType
     {
-        Spade   =   0,  // スペード
-        Club    =   1,  // クラブ
-        Diamond =   2,  // ダイヤ
-        Heart   =   3,  // ハート
-        Joker   =   4   // ジョーカー
+        Spade = 0,  // スペード
+        Club = 1,  // クラブ
+        Diamond = 2,  // ダイヤ
+        Heart = 3,  // ハート
+        Joker = 4   // ジョーカー
     }
 
     /// <summary>
@@ -41,13 +40,13 @@ public class Define
     /// </summary>
     public enum SuitColorMode
     {
-        All         =   0,  // 全色使用
-        BlackOnly   =   1,  // 黒のみ
-        RedOnly     =   2,  // 赤のみ
-        SpadeOnly   =   3,  // スペード
-        ClubOnly    =   4,  // クラブ
-        DiamondOnly =   5,  // ダイヤ
-        HeartOnly   =   6,  // ハート
+        All = 0,  // 全色使用
+        BlackOnly = 1,  // 黒のみ
+        RedOnly = 2,  // 赤のみ
+        SpadeOnly = 3,  // スペード
+        ClubOnly = 4,  // クラブ
+        DiamondOnly = 5,  // ダイヤ
+        HeartOnly = 6,  // ハート
     }
 
     /// <summary>
@@ -55,9 +54,9 @@ public class Define
     /// </summary>
     public enum UseJoker
     {
-        None    =   0,  // ジョーカーなし
-        One     =   1,  // 1枚使用
-        Two     =   2   // 2枚使用
+        None = 0,  // ジョーカーなし
+        One = 1,  // 1枚使用
+        Two = 2   // 2枚使用
     }
 
     /// <summary>
@@ -65,44 +64,57 @@ public class Define
     /// </summary>
     public enum BackSpriteColor
     {
-        Red     = 0,    // 赤
-        Blue    = 1     // 青
+        Red = 0,    // 赤
+        Blue = 1     // 青
     }
+
+    // *******************************************************
+    // クラス
+    // *******************************************************
 
     /// <summary>
     /// 表示位置
     /// </summary>
     public class Position
     {
+        /// <summary>
+        /// 表示なし（基準点）
+        /// </summary>
         public static readonly Vector3 None = Vector3.zero;
 
-        /// <summary>山札の基準位置</summary>
-        public static readonly Vector3 Deck = new Vector3(7.0f, -2.0f, 0.0f);
+        /// <summary>
+        /// 山札の基準位置
+        /// </summary>
+        public static readonly Vector3 Deck = new Vector3(6.5f, -1.0f, 0.0f);
 
-        /// <summary>山札内のカード間のオフセット</summary>
+        /// <summary>
+        /// 山札内のカード間のオフセット
+        /// </summary>
         public static readonly Vector3 DeckOffset = new Vector3(0.01f, -0.01f, 0.01f);
 
-        /// <summary>場札の表示位置リスト</summary>
+        /// <summary>
+        /// 場札の表示位置リスト
+        /// </summary>
         public static readonly IReadOnlyList<Vector3> Field = new List<Vector3>
         {
-            new Vector3(-3.0f, 1.0f, 0.0f),
-            new Vector3( 0.0f, 1.0f, 0.0f),
-            new Vector3( 3.0f, 1.0f, 0.0f)
-            /*
-            new Vector3(-3.6f, 1.0f, 0.0f),
-            new Vector3(-1.2f, 1.0f, 0.0f),
-            new Vector3( 1.2f, 1.0f, 0.0f),
-            new Vector3( 3.6f, 1.0f, 0.0f)
-            */
+            new Vector3(-3.0f, 2.0f, 0.0f),
+            new Vector3( 0.0f, 2.0f, 0.0f),
+            new Vector3( 3.0f, 2.0f, 0.0f)
+            //new Vector3(-3.6f, 1.0f, 0.0f),
+            //new Vector3(-1.2f, 1.0f, 0.0f),
+            //new Vector3( 1.2f, 1.0f, 0.0f),
+            //new Vector3( 3.6f, 1.0f, 0.0f)
         };
 
-        /// <summary>手札の表示位置リスト</summary>
+        /// <summary>
+        /// 手札の表示位置リスト
+        /// </summary>
         public static readonly IReadOnlyList<Vector3> Hand = new List<Vector3>
         {
-            new Vector3(-4.5f, -2.0f, 0.0f),
-            new Vector3(-1.5f, -2.0f, 0.0f),
-            new Vector3( 1.5f, -2.0f, 0.0f),
-            new Vector3( 4.5f, -2.0f, 0.0f)
+            new Vector3(-4.5f, -1.0f, 0.0f),
+            new Vector3(-1.5f, -1.0f, 0.0f),
+            new Vector3( 1.5f, -1.0f, 0.0f),
+            new Vector3( 4.5f, -1.0f, 0.0f)
         };
     }
 }
@@ -112,15 +124,24 @@ public class Define
 /// </summary>
 public static class SortLayers
 {
-    public static string Name(CardProperty layer)
+    // *******************************************************
+    // メンバ変数
+    // *******************************************************
+
+    /// <summary>
+    /// ソートレイヤー名
+    /// </summary>
+    /// <param name="cardProperty">カードの所属</param>
+    /// <returns>ソートレイヤー名</returns>
+    public static string Name(CardProperty cardProperty)
     {
-        return layer switch
+        return cardProperty switch
         {
-            CardProperty.None   =>  "None",
-            CardProperty.Deck   =>  "Deck",
-            CardProperty.Field  =>  "Field",
-            CardProperty.Hand   =>  "Hand",
-            _                   =>  "Default"
+            CardProperty.None => "None",
+            CardProperty.Deck => "Deck",
+            CardProperty.Field => "Field",
+            CardProperty.Hand => "Hand",
+            _ => "Default"
         };
     }
 }
@@ -182,14 +203,14 @@ public class Card
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="suit"></param>
-    /// <param name="number"></param>
-    /// <param name="backColor"></param>
-    /// <param name="faceSprite"></param>
-    /// <param name="backSprite"></param>
-    /// <param name="isFaceUp"></param>
-    /// <param name="cardProperty"></param>
-    /// <param name="slotIndex"></param>
+    /// <param name="suit">スート</param>
+    /// <param name="number">数字</param>
+    /// <param name="backColor">カード裏面の絵柄</param>
+    /// <param name="faceSprite">表面絵柄</param>
+    /// <param name="backSprite">裏面絵柄</param>
+    /// <param name="isFaceUp">裏表</param>
+    /// <param name="cardProperty">カードの所属</param>
+    /// <param name="slotIndex">場のスロット位置</param>
     public Card(SuitType suit, int number, BackSpriteColor backColor, Sprite? faceSprite, Sprite? backSprite, bool isFaceUp, CardProperty cardProperty, int slotIndex)
     {
         Suit = suit;

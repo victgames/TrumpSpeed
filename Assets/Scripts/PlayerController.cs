@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Profiling;
+﻿using UnityEngine;
 using static Define;
 
 public class PlayerController : MonoBehaviour
@@ -34,7 +31,7 @@ public class PlayerController : MonoBehaviour
     /// 移動（ドラッグ）フラグ
     /// </summary>
     private bool _dragFlag = false;
-    
+
     /// <summary>
     /// スナップ（位置合わせ）フラグ
     /// </summary>
@@ -166,16 +163,13 @@ public class PlayerController : MonoBehaviour
 
         if (_selectedCard != null)
         {
-            var draggedCard = _selectedCard.GetComponent<CardController>();
+            //CardController selectedCard = _selectedCard.GetComponent<CardController>();
+            // 選択色を元に戻す
+            _selectedCard.GetComponent<SpriteRenderer>().color = Color.white;
 
             if (_snapFlag && _targetCard != null)
             {
-                int orderslotIndex = draggedCard.Card.SlotIndex;
-
-                GameDirector.Instance.TransferCardEntry(_selectedCard, _targetCard);
-
-                //GameDirector.Instance.AddNoneCard(_targetCard);
-                //GameDirector.Instance.AddHandCard(orderslotIndex);
+                GameDirector.Instance.JudgeGameFinish(_selectedCard, _targetCard);
             }
             else
             {
@@ -183,11 +177,8 @@ public class PlayerController : MonoBehaviour
                 _selectedCard.transform.position = _originalPosition;
 
                 // sortingOrderを 0 に変更
-                draggedCard.SetSortingOrder(0);
+                _selectedCard.GetComponent<CardController>().SetSortingOrder(0);
             }
-
-            // 選択色を元に戻す
-            _selectedCard.GetComponent<SpriteRenderer>().color = Color.white;
         }
 
         // 状態をリセット

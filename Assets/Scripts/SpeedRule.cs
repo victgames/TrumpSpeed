@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// スピードゲームに関する処理
+/// </summary>
 public class SpeedRule : MonoBehaviour
 {
     // *******************************************************
@@ -9,8 +11,11 @@ public class SpeedRule : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// カードAとBがSpeedのルール上で連続しているかを判定（±1 or 1-13）
+    /// カードAとBがSpeedのルール上で連続しているかを判定（±1 or 1-13 or Joker）
     /// </summary>
+    /// <param name="handCard">手札数字</param>
+    /// <param name="fieldCard">場札数字</param>
+    /// <returns>カード重ね判定結果</returns>
     public static bool IsSequential(Card handCard, Card fieldCard)
     {
         int a = handCard.Number;
@@ -22,9 +27,9 @@ public class SpeedRule : MonoBehaviour
     /// <summary>
     /// 任意の2枚が連続しているかを探索
     /// </summary>
-    /// <param name="firstEntries"></param>
-    /// <param name="secondEntries"></param>
-    /// <returns></returns>
+    /// <param name="firstEntries">エントリー（1つ目）</param>
+    /// <param name="secondEntries">エントリー（2つ目）</param>
+    /// <returns>カード重ねの組み合わせがあるか判定結果</returns>
     public static bool JudgeSequential(List<CardEntry> firstEntries, List<CardEntry> secondEntries)
     {
         // すべての組み合わせを探索

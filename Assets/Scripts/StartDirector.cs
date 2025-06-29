@@ -1,8 +1,11 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using static Define;
 
+/// <summary>
+/// スタートシーンのメイン処理を定義するクラス
+/// </summary>
 public class StartDirector : MonoBehaviour
 {
     // *******************************************************
@@ -13,7 +16,7 @@ public class StartDirector : MonoBehaviour
     /// 難易度
     /// </summary>
     [SerializeField]
-    public TMP_Dropdown _difficulty;
+    private TMP_Dropdown _difficulty;
 
     // *******************************************************
     // Unityメソッド
@@ -31,43 +34,48 @@ public class StartDirector : MonoBehaviour
     /// <summary>
     /// スタートボタンクリック時操作
     /// </summary>
-    public void OnStartButton()
+    private void OnStartButton()
     {
         int difficulty = _difficulty.value;
 
         switch (difficulty)
         {
-            case 0:
-                GameSettings.SuitColorMode = Define.SuitColorMode.All;
-                GameSettings.UseJoker = Define.UseJoker.None;
+            case 0:     // おに
+                GameSettings.SetGameSettings(SuitColorMode.All, UseJoker.None, BackSpriteColor.Red);
                 break;
-            case 1:
-                GameSettings.SuitColorMode = Define.SuitColorMode.All;
-                GameSettings.UseJoker = Define.UseJoker.Two;
+
+            case 1:     // むずかしい
+                GameSettings.SetGameSettings(SuitColorMode.All, UseJoker.Two, BackSpriteColor.Red);
                 break;
-            case 2:
-                GameSettings.SuitColorMode = Define.SuitColorMode.BlackOnly;
-                GameSettings.UseJoker = Define.UseJoker.Two;
+
+            case 2:     // ふつう
+                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.Two, BackSpriteColor.Red);
                 break;
-            case 3:
-                GameSettings.SuitColorMode = Define.SuitColorMode.SpadeOnly;
-                GameSettings.UseJoker = Define.UseJoker.One;
+
+            case 3:     // やさしい
+                GameSettings.SetGameSettings(SuitColorMode.SpadeOnly, UseJoker.One, BackSpriteColor.Red);
                 break;
-            default:
+
+            default:    // エラーを防ぐため代入
+                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.Two, BackSpriteColor.Red);
                 break;
         }
 
-        SceneManager.LoadScene("GameScene"); // シーン名で遷移
+        // ゲームシーンに遷移
+        SceneManager.LoadScene("GameScene");
     }
 
     /// <summary>
     /// クローズボタンクリック時操作
     /// </summary>
-    public void OnCloseButton()
+    private void OnCloseButton()
     {
-        Application.Quit(); // アプリ終了
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // エディタ上でも止める
-        #endif
+        // アプリ終了
+        Application.Quit();
+#if UNITY_EDITOR
+
+        // エディタ上でも止める
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 }
