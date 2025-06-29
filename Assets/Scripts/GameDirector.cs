@@ -50,6 +50,27 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     private List<CardEntry> _entriesNone = new List<CardEntry>();
 
+    /// <summary>
+    /// ゲームBGM音オーディオソース
+    /// </summary>
+    public AudioSource _gameBGMAudioSource;
+
+    /// <summary>
+    /// 正解音オーディオソース
+    /// </summary>
+    public AudioSource _correctAudioSource;
+
+    /// <summary>
+    /// クリア音オーディオソース
+    /// </summary>
+    public AudioSource _clearAudioSource;
+
+    /// <summary>
+    /// ゲームオーバー音オーディオソース
+    /// </summary>
+    public AudioSource _gameOverAudioSource;
+
+
     // *******************************************************
     // プロパティ
     // *******************************************************
@@ -128,6 +149,12 @@ public class GameDirector : MonoBehaviour
         {
             // 「ゲームクリア」を表示
             _uiManager.DisplayPanel(true);
+
+            // ゲームBGMを止める
+            _gameBGMAudioSource.Stop();
+
+            // クリアBGMを再生
+            _clearAudioSource.Play();
         }
         else
         {
@@ -140,11 +167,22 @@ public class GameDirector : MonoBehaviour
             {
                 // これ以上は重ねられないためGameOver
                 _uiManager.DisplayPanel(false);
+
+                // ゲームBGMを止める
+                _gameBGMAudioSource.Stop();
+
+                // ゲームオーバーBGMを再生
+                _gameOverAudioSource.Play();
             }
-            else if (!judgeHand)
+            else
             {
-                // 「山札切り直し」ボタン表示
-                _uiManager.DisplayRedistributionButton(true);
+                if (!judgeHand)
+                {
+                    // 「山札切り直し」ボタン表示
+                    _uiManager.DisplayRedistributionButton(true);
+                }
+                // 正解音再生
+                _correctAudioSource.Play();
             }
         }
     }
