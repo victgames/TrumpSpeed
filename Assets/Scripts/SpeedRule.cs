@@ -27,20 +27,18 @@ public class SpeedRule : MonoBehaviour
     /// <returns></returns>
     public static bool JudgeSequential(List<CardEntry> firstEntries, List<CardEntry> secondEntries)
     {
-        bool judge = false;
         // すべての組み合わせを探索
         for (int i = 0; i < firstEntries.Count; i++)
         {
             for (int j = 0; j < secondEntries.Count; j++)
             {
                 // 1つでも重ねる処理が可能な組み合わせがあればtrue
-                judge = IsSequential(firstEntries[i].Data, secondEntries[j].Data);
-                if (judge)
+                if (IsSequential(firstEntries[i].Data, secondEntries[j].Data))
                 {
-                    return judge;
+                    return true;
                 }
             }
         }
-        return judge;
+        return false;
     }
 }

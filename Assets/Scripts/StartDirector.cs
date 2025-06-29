@@ -3,13 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class StartDirector : MonoBehaviour
 {
-    // Startボタンに割り当てる
+    /// <summary>
+    /// 
+    /// </summary>
     public void OnStartButton()
     {
         SceneManager.LoadScene("GameScene"); // シーン名で遷移
     }
 
-    // Closeボタンに割り当てる
+    /// <summary>
+    /// 
+    /// </summary>
     public void OnCloseButton()
     {
         Application.Quit(); // アプリ終了
