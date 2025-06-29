@@ -165,9 +165,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _redistributionButton: {fileID: 1849492062}
   _nextButton: {fileID: 673486647}
-  _gameFinishPanel: {fileID: 1123829605}
+  _gameFinishPanel: {fileID: 735622165}
   _clearText: {fileID: 1810565735}
-  _gameOverText: {fileID: 735622165}
+  _gameOverText: {fileID: 1123829605}
 --- !u!1 &528980955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,5 +1848,5 @@ SceneRoots:
   - {fileID: 1111836400}
   - {fileID: 1324303638}
   - {fileID: 1630621007}
-  - {fileID: 1624028998}
   - {fileID: 284040979}
+  - {fileID: 1624028998}

@@ -57,7 +57,7 @@ public class StartDirector : MonoBehaviour
                 break;
 
             default:    // ƒGƒ‰[‚ğ–h‚®‚½‚ß‘ã“ü
-                GameSettings.SetGameSettings(SuitColorMode.BlackOnly, UseJoker.Two, BackSpriteColor.Red);
+                GameSettings.SetGameSettings(SuitColorMode.SpadeOnly, UseJoker.Two, BackSpriteColor.Red);
                 break;
         }
 
