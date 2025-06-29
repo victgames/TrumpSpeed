@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI; // ← これを追加！
 using static Define;
+using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class GameDirector : MonoBehaviour
@@ -23,6 +25,12 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     [SerializeField]
     private CardManager _cardManager;
+
+    /// <summary>
+    /// UI操作を管理するコンポーネント
+    /// </summary>
+    [SerializeField]
+    private UIManager _uiManager;
 
     /// <summary>
     /// 山札リスト（赤）
@@ -50,10 +58,9 @@ public class GameDirector : MonoBehaviour
     // *******************************************************
 
     /// <summary>
-    /// 
+    /// インスタンス
     /// </summary>
     public static GameDirector Instance { get; private set; }
-
 
     // *******************************************************
     // Unityメソッド
@@ -79,12 +86,17 @@ public class GameDirector : MonoBehaviour
     private void Start()
     {
         // カードリストを作成
-        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.SpadeOnly, UseJoker.One, BackSpriteColor.Red);
+        List<Card> cardList = _cardGenerator.InitializeCardList(GameSettings.SuitColorMode, GameSettings.UseJoker, BackSpriteColor.Red);
         _entriesDeckRed = _cardGenerator.InitializeEntries(cardList);
 
         // シャッフル後山札を表示
         _cardManager.Shuffle(_entriesDeckRed);
-        _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
+
+        for (int i = 0; i < _entriesDeckRed.Count; i++)
+        {
+            Vector3 position = Position.Deck + Position.DeckOffset * i;
+            _cardManager.UpdateEntry(_entriesDeckRed[i], position, false, CardProperty.Deck, i, 0);
+        }
 
         // 場札, 手札を引く
         for (int slotIndex = 0; slotIndex < Position.Field.Count; slotIndex++)
@@ -95,37 +107,41 @@ public class GameDirector : MonoBehaviour
         {
             _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
         }
-    }
 
-    private void Update()
-    {
+        MargeHandCardAndDraw();
     }
 
     /// <summary>
     /// 手札入れ替えボタンクリック時操作
     /// </summary>
-    public void OnButtonClick()
+    public void OnRedistributionButtonClick()
     {
-        // カードリストを作成
-        _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+        _uiManager.DisplayRedistributionButton(false);
 
-        // シャッフル後山札を表示
-        _cardManager.Shuffle(_entriesDeckRed);
-        _cardManager.DisplayDeck(_entriesDeckRed, Position.Deck, Position.DeckOffset);
+        MargeHandCardAndDraw();
+    }
 
-        // 手札を引く
-        for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
-        {
-            _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
-        }
+    /// <summary>
+    /// スタートシーン以降ボタンクリック時操作
+    /// </summary>
+    public void OnNextButtonClick()
+    {
+        SceneManager.LoadScene("StartScene"); // シーン名で遷移
     }
 
     // *******************************************************
     // メソッド
     // *******************************************************
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="selectedObj"></param>
+    /// <param name="targetObj"></param>
     public void TransferCardEntry(GameObject selectedObj, GameObject targetObj)
     {
+        int slotIndex = selectedObj.GetComponent<CardController>().Card.SlotIndex;
+
         CardEntry? selectedEntry = _entriesHandRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == selectedObj);
         CardEntry? targetEntry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == targetObj);
 
@@ -133,33 +149,129 @@ public class GameDirector : MonoBehaviour
 
         _entriesHandRed.Remove(selectedEntry);
         _entriesFieldRed.Add(selectedEntry);
+
+        
+
+        //CardEntry? entry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == gameObject);
+
+        //_cardManager.UpdateEntry(entry, Position.None, false, CardProperty.None, 0, 0);
+
+        targetObj.SetActive(false);
+
+        _entriesFieldRed.Remove(targetEntry);
+        _entriesNoneRed.Add(targetEntry);
+
+        _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+
+        JudgeGameFinish();
+
     }
 
+    /*
     /// <summary>
     /// 手札を1枚追加する
     /// </summary>
     public void AddHandCard(int slotIndex)
     {
         _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
-
-        if (_entriesDeckRed.Count == 0 && _entriesHandRed.Count == 0)
-        {
-            SceneManager.LoadScene("ClearScene"); // シーン名で遷移
-        }
     }
+    */
+
+    /*
+    /// <summary>
+    /// Noneを1枚追加する
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void AddNoneCard(GameObject gameObject)
+    {
+        CardEntry? entry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == gameObject);
+
+        _cardManager.UpdateEntry(entry, Position.None, false, CardProperty.None, 0, 0);
+        gameObject.SetActive(false);
+        
+        _entriesFieldRed.Remove(entry);
+        _entriesNoneRed.Add(entry);
+
+        JudgeGameFinish();
+    }
+    */
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="slotIndex"></param>
-    public void AddUsedCard(GameObject Obj)
+    private void JudgeGameFinish()
     {
-        CardEntry? entry = _entriesFieldRed.FirstOrDefault(entry => entry.View != null && entry.View.gameObject == Obj);
+        if (_entriesDeckRed.Count == 0 && _entriesHandRed.Count == 0)
+        {
+            _uiManager.DisplayPanel(true);
+            //SceneManager.LoadScene("ClearScene"); // シーン名で遷移
+        }
+        else
+        {
+            bool judgeDeck = SpeedRule.JudgeSequential(_entriesFieldRed, _entriesDeckRed);
+            bool judgeHand = SpeedRule.JudgeSequential(_entriesFieldRed, _entriesHandRed);
 
-        _cardManager.UpdateEntry(entry, Position.None, false, CardProperty.None, 0, 0);
-        Obj.SetActive(false);
-        
-        _entriesFieldRed.Remove(entry);
-        _entriesNoneRed.Add(entry);
+            if (!judgeDeck && !judgeHand)
+            {
+                // これ以上は重ねられないためGameOver
+                _uiManager.DisplayPanel(false);
+
+                //SceneManager.LoadScene("ClearScene"); // シーン名で遷移
+            }
+            else if (!judgeHand)
+            {
+                _uiManager.DisplayRedistributionButton(true);
+            }
+        }
     }
+
+    /// <summary>
+    /// 手札入れ替え管理
+    /// </summary>
+    private void MargeHandCardAndDraw()
+    {
+        while (!SpeedRule.JudgeSequential(_entriesFieldRed, _entriesHandRed))
+        {
+            // 山札と手札を混ぜる
+            _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+
+            // シャッフル後山札を表示
+            _cardManager.Shuffle(_entriesDeckRed);
+            for (int i = 0; i < _entriesDeckRed.Count; i++)
+            {
+                Vector3 position = Position.Deck + Position.DeckOffset * i;
+                _cardManager.UpdateEntry(_entriesDeckRed[i], position, false, CardProperty.Deck, i, 0);
+            }
+
+            // 手札を引く
+            for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
+            {
+                _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+            }
+        }
+
+        /*
+        do
+        {
+            // 山札と手札を混ぜる
+            _cardManager.MergeCardEntries(_entriesHandRed, _entriesDeckRed);
+
+            // シャッフル後山札を表示
+            _cardManager.Shuffle(_entriesDeckRed);
+            for (int i = 0; i < _entriesDeckRed.Count; i++)
+            {
+                Vector3 position = Position.Deck + Position.DeckOffset * i;
+                _cardManager.UpdateEntry(_entriesDeckRed[i], position, false, CardProperty.Deck, i, 0);
+            }
+
+            // 手札を引く
+            for (int slotIndex = 0; slotIndex < Position.Hand.Count; slotIndex++)
+            {
+                _cardManager.DrawTopCard(_entriesDeckRed, _entriesHandRed, CardProperty.Hand, Position.Hand[slotIndex], slotIndex);
+            }
+        }
+        while (!SpeedRule.JudgeSequential(_entriesFieldRed, _entriesHandRed));
+        */
+    }
+    
 }

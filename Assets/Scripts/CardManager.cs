@@ -14,8 +14,14 @@ public class CardManager : MonoBehaviour
     /// 山札を表示
     /// </summary>
     /// <param name="entries"></param>
-    public void DisplayDeck(List<CardEntry> entries, Vector3 basisPosition, Vector3 offset)
+    //public void DisplayDeck(List<CardEntry> entries, Vector3 basisPosition, Vector3 offset)
+    public void DisplayDeck(CardEntry entry, Vector3 position)
     {
+        //Vector3 position = basisPosition + offset * i;
+
+        //UpdateEntry(entry, position, false, CardProperty.Deck, i, 0);
+
+        /*
         for (int i = 0; i < entries.Count; i++)
         {
             CardEntry entry = entries[i];
@@ -24,7 +30,6 @@ public class CardManager : MonoBehaviour
 
             UpdateEntry(entry, position, false, CardProperty.Deck, i, 0);
 
-            /*
             // カードの位置を変更して再表示
             entry.View.transform.position = pos + offset * i;
 
@@ -33,8 +38,9 @@ public class CardManager : MonoBehaviour
             entry.View.GetComponent<CardController>()?.SetCardProperty(CardProperty.Deck);
             entry.View.GetComponent<CardController>()?.SetSortingOrder(i);
             entry.View.GetComponent<CardController>()?.SetSlotIndex(0);
-            */
+            
         }
+        */
     }
 
     /// <summary>

@@ -173,8 +173,9 @@ public class PlayerController : MonoBehaviour
                 int orderslotIndex = draggedCard.Card.SlotIndex;
 
                 GameDirector.Instance.TransferCardEntry(_selectedCard, _targetCard);
-                GameDirector.Instance.AddHandCard(orderslotIndex);
-                GameDirector.Instance.AddUsedCard(_targetCard);
+
+                //GameDirector.Instance.AddNoneCard(_targetCard);
+                //GameDirector.Instance.AddHandCard(orderslotIndex);
             }
             else
             {

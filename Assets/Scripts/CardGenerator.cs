@@ -73,7 +73,7 @@ public class CardGenerator : MonoBehaviour
         for (int i = 0; i < (int)includeJoker; i++)
         {
             // Joker‚Í_faceSprites‚Ì53”Ô–ÚˆÈ~‚É”z’u
-            Sprite? faceSprite = GetFaceSprite(SuitType.Joker, 53 + i);
+            Sprite? faceSprite = GetFaceSprite(SuitType.Joker, 52 + i);
             Sprite? backSprite = GetBackSprite(backColor);
             deck.Add(new Card(SuitType.Joker, 0, backColor, faceSprite, backSprite, false, CardProperty.None, -1));
         }
