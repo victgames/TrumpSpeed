@@ -41,7 +41,7 @@ public class Define
     /// </summary>
     public enum SuitColorMode
     {
-        Both        =   0,  // 両方使用
+        All         =   0,  // 全色使用
         BlackOnly   =   1,  // 黒のみ
         RedOnly     =   2,  // 赤のみ
         SpadeOnly   =   3,  // スペード
@@ -85,10 +85,15 @@ public class Define
         /// <summary>場札の表示位置リスト</summary>
         public static readonly IReadOnlyList<Vector3> Field = new List<Vector3>
         {
+            new Vector3(-3.0f, 1.0f, 0.0f),
+            new Vector3( 0.0f, 1.0f, 0.0f),
+            new Vector3( 3.0f, 1.0f, 0.0f)
+            /*
             new Vector3(-3.6f, 1.0f, 0.0f),
-            //new Vector3(-1.2f, 1.0f, 0.0f),
-            //new Vector3( 1.2f, 1.0f, 0.0f),
+            new Vector3(-1.2f, 1.0f, 0.0f),
+            new Vector3( 1.2f, 1.0f, 0.0f),
             new Vector3( 3.6f, 1.0f, 0.0f)
+            */
         };
 
         /// <summary>手札の表示位置リスト</summary>

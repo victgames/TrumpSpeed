@@ -62,7 +62,6 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public static GameDirector Instance { get; private set; }
 
-
     // *******************************************************
     // Unityメソッド
     // *******************************************************
@@ -87,7 +86,7 @@ public class GameDirector : MonoBehaviour
     private void Start()
     {
         // カードリストを作成
-        List<Card> cardList = _cardGenerator.InitializeCardList(SuitColorMode.SpadeOnly, UseJoker.None, BackSpriteColor.Red);
+        List<Card> cardList = _cardGenerator.InitializeCardList(GameSettings.SuitColorMode, GameSettings.UseJoker, BackSpriteColor.Red);
         _entriesDeckRed = _cardGenerator.InitializeEntries(cardList);
 
         // シャッフル後山札を表示
@@ -134,6 +133,11 @@ public class GameDirector : MonoBehaviour
     // メソッド
     // *******************************************************
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="selectedObj"></param>
+    /// <param name="targetObj"></param>
     public void TransferCardEntry(GameObject selectedObj, GameObject targetObj)
     {
         int slotIndex = selectedObj.GetComponent<CardController>().Card.SlotIndex;
